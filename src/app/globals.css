@@ -1,0 +1,186 @@
+/* Variables */
+:root {
+  --background-color: #000000;
+  --text-color: #ffffff;
+  --alt-background-color: #1f1f1f;
+  --inside-padding: 15px;
+  --link-hightlight: #8d7cff;
+}
+
+/* Body */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Buttons */
+button {
+  padding: 5px;
+  border-radius: 5px;
+  border: var(--text-color) 1px solid;
+  cursor: pointer;
+}
+
+/* Inputs */
+input {
+  margin-bottom: 10px;
+}
+
+/* Main */
+main {
+  padding: 20px;
+}
+
+/* Headings */
+h1 {
+  margin: 0;
+}
+
+/* NavBar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  padding: var(--inside-padding);
+  background-color: var(--alt-background-color);
+}
+
+.navlinks a {
+  margin-left: 10px;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: .3s;
+}
+
+.navlinks a:hover {
+  color: var(--link-hightlight);
+}
+
+.title-link {
+  text-decoration: none;
+  color: var(--text-color);
+  transition: .3s;
+}
+
+.title-link:hover {
+  color: var(--link-hightlight);
+}
+
+/* Dashboard */
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-top: var(--inside-padding);
+}
+
+.dashboard-card {
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: .3s;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.gpa-card-main-text {
+  font-size: 96px;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* Login Box */
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 4px white;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.login-box button {
+  padding: 5px;
+  border-radius: 5px;
+  border: black 1px solid;
+  cursor: pointer;
+  background-color: #000000;
+  color: white;
+  width: 100%;
+  border: 1px solid #ffffff;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+.login-box button:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.login-box input {
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+  background-color: var(--background-color);
+  border-bottom: #ffffff 1px solid !important;
+  border: 0;
+  transition: .2s;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-box input:focus {
+  outline: none;
+}
+
+/* Grades Table */
+.inline-display-div {
+  display: inline;
+}
+
+.grades-table {
+  width: 100%;
+  padding: var(--inside-padding);
+}
+
+.grades-table tr td:nth-child(2) {
+  text-align: right;
+  font-weight: 700;
+}
+
+.grades-table tr td:nth-child(4) {
+  text-align: right;
+  width: 0%;
+}
+
+.grades-table tr td:nth-child(3) {
+  text-align: center;
+  width: 0%;
+  padding: 0 20px;
+}
+
+.grades-table tr th {
+  text-align: left;
+  padding: 10px 0;
+}
+
+.grades-table tr th:nth-child(2) {
+  text-align: right;
+}
+
+.grades-table tr th:nth-child(3) {
+  text-align: center;
+}
+
+.grades-table tr th:nth-child(4) {
+  text-align: right;
+}
