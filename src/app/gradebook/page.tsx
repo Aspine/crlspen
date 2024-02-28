@@ -47,13 +47,13 @@ export default function Home() {
       <NavBar />
       <div className="page-main">
         <div className="gpa-container">
-          <div className="gpa-box">
+          <div className="gpa-box hUnweightedGpa">
             <p>Unweighted: {hUnweightedGpa.toFixed(2)}</p>
           </div>
-          <div className="gpa-box">
+          <div className="gpa-box fWeightedGpa">
             <p>Weighted: {fWeightedGpa.toFixed(2)}</p>
           </div>
-          <div className="gpa-box">
+          <div className="gpa-box fUnweightedGpa">
             <p>Unweighted: {fUnweightedGpa.toFixed(2)}</p>
           </div>
         </div>
