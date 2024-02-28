@@ -9,7 +9,7 @@ export interface GradePair {
     post: number;
 }
 
-export type GPAType = 'fWeighted' | 'fUnweighted' | 'hUnweighted';
+export type GPAType = 'fWeighted' | 'fUnweighted' | 'hUnweighted' | "hWeighted";
 
 export interface ClassData {
     teacherName: string;

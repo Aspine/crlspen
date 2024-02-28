@@ -1,7 +1,8 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import chromium from "chrome-aws-lambda";
 
 function delay(time: number) {
   return new Promise(function (resolve) {
@@ -21,7 +22,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const passwordString = String(password);
 
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
+    });
+
     const page = await browser.newPage();
 
     // log in to aspen
