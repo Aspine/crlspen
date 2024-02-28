@@ -1,0 +1,29 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--inside-padding);
+    background-color: var(--alt-background-color);
+    border-radius: 20px;
+}
+
+.navlinks a {
+    margin-left: 10px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: var(--transitionTime);
+}
+
+.navlinks a:hover {
+    color: var(--link-hightlight);
+}
+
+.title-link {
+    text-decoration: none;
+    color: var(--text-color);
+    transition: 0var(--transitionTime);
+}
+
+.title-link:hover {
+    color: var(--link-hightlight);
+}

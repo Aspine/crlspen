@@ -12,7 +12,8 @@ function delay(time: number) {
 export async function POST(req: NextRequest, res: NextResponse) {
   const reqBody = await req.json();
 
-  // console.log(reqBody);
+  // parse username and password from request body
+  console.log(reqBody);
 
   const { username, password } = reqBody;
 
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
+    // log in to aspen
     await page.goto("https://aspen.cpsd.us/aspen/logon.do", {
       waitUntil: "networkidle2",
     });
@@ -31,12 +33,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
     await page.type("#password", passwordString);
     await page.click("#logonButton");
 
-    await delay(500);
+    await delay(250);
 
     await page.goto(
       "https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list",
     );
 
+    // scrape class data
     const classes = await page.evaluate(() => {
       const classRows = document.querySelectorAll(
         "table > tbody > tr.listCell",
@@ -69,9 +72,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     console.log(classes);
 
-    cookies().set("classData", JSON.stringify(classes));
-
-    return NextResponse.json({ text: classes }, { status: 200 });
+    // send class data to client
+    if (classes.length <= 0) { // my kinda shit way of checking if the login failed, E.G. login was wrong. Make this better later
+      console.log("IT DONDA WORKA?!");
+      return NextResponse.redirect("/", 302); // redirect back to login page, cus, yk, do that! (im tired ok? this dont have to make sense, as long as it doesn't error)
+    } else {
+      console.log("IT WORKA?!");
+      cookies().set("classData", JSON.stringify(classes));
+      return NextResponse.json({ text: classes }, { status: 200 });
+    }
+    
   } catch (error) {
     console.error("Error during scraping:", error);
     if (res.status) {

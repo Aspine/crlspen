@@ -1,5 +1,4 @@
-import puppeteer from "puppeteer-core";
-import chromium from "@sparticuz/chromium";
+import puppeteer from "puppeteer";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -14,6 +13,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const reqBody = await req.json();
 
   // parse username and password from request body
+  console.log(reqBody);
 
   const { username, password } = reqBody;
 
@@ -21,21 +21,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const passwordString = String(password);
 
   try {
-    // set up puppeteer
-
-    chromium.setGraphicsMode = false;
-
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: false,
-    });
-
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
     // log in to aspen
-
     await page.goto("https://aspen.cpsd.us/aspen/logon.do", {
       waitUntil: "networkidle2",
     });
@@ -51,7 +40,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
 
     // scrape class data
-
     const classes = await page.evaluate(() => {
       const classRows = document.querySelectorAll(
         "table > tbody > tr.listCell",
@@ -68,7 +56,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           .querySelector("td:nth-child(5)")
           ?.textContent?.replace(/\n/g, "");
         const grade = row
-          .querySelector("td:nth-child(8  )")
+          .querySelector("td:nth-child(8)")
           ?.textContent?.replace(/\n/g, "");
 
         return {
@@ -85,10 +73,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
     console.log(classes);
 
     // send class data to client
-
-    cookies().set("classData", JSON.stringify(classes));
-
-    return NextResponse.json({ text: classes }, { status: 200 });
+    if (classes.length <= 0) { // my kinda shit way of checking if the login failed, E.G. login was wrong. Make this better later
+      console.log("IT DONDA WORKA?!");
+      return NextResponse.redirect("/", 302); // redirect back to login page, cus, yk, do that! (im tired ok? this dont have to make sense, as long as it doesn't error)
+    } else {
+      console.log("IT WORKA?!");
+      cookies().set("classData", JSON.stringify(classes));
+      return NextResponse.json({ text: classes }, { status: 200 });
+    }
+    
   } catch (error) {
     console.error("Error during scraping:", error);
     if (res.status) {

@@ -1,0 +1,41 @@
+.inline-display-div {
+    display: inline;
+}
+
+.grades-table {
+    width: 100%;
+    padding: var(--inside-padding);
+}
+
+.grades-table tr td:nth-child(2) {
+    text-align: right;
+    font-weight: 700;
+}
+
+.grades-table tr td:nth-child(4) {
+    text-align: right;
+    width: 0%;
+}
+
+.grades-table tr td:nth-child(3) {
+    text-align: center;
+    width: 0%;
+    padding: 0 20px;
+}
+
+.grades-table tr th {
+    text-align: left;
+    padding: 10px 0;
+}
+
+.grades-table tr th:nth-child(2) {
+    text-align: right;
+}
+
+.grades-table tr th:nth-child(3) {
+    text-align: center;
+}
+
+.grades-table tr th:nth-child(4) {
+    text-align: right;
+}

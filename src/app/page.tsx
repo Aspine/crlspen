@@ -37,7 +37,7 @@ export default function Home() {
   };
 
   return (
-    <main>
+    <main className="loginPage">
       {loading ? ( // Conditionally render loading screen
         <div className="loading-screen">Loading...</div>
       ) : (
@@ -57,6 +57,15 @@ export default function Home() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
           />
+          <div className="loginSplash">
+            Welcome to the beta of Enipsa!
+            <br />
+            This is actively being worked on,
+            <br />
+            check out the <a href="https://github.com/enipsa/aspine2">repository on our github</a>!
+            <br />
+            <br />
+          </div>
           {/* <div className="inline-display-div">
           <p>I agree to the TOS:</p>
           <input
@@ -67,7 +76,7 @@ export default function Home() {
             required
           />
           </div> */}
-          <button type="submit" onClick={handleLogin}>
+          <button className="loginSubmissionButton" type="submit" onClick={handleLogin}>
             Login
           </button>
         </div>

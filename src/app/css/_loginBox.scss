@@ -1,0 +1,53 @@
+.login-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: var(--priBorRad);
+    box-shadow: 0 0 5px white;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.login-box button {
+    padding: 5px;
+    cursor: pointer;
+    background-color: #000000;
+    color: white;
+    width: 100%;
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    box-sizing: border-box;
+}
+
+.login-box button:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.login-box input {
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    background-color: var(--background-color);
+    border-bottom: #ffffff 1px solid !important;
+    border: 0;
+    transition: 0.2s;
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login-box input:focus {
+    outline: none;
+}
+
+.loginSplash {
+    text-align: center;
+    text-decoration: none;
+}
+
+.loginSubmissionButton {
+    border-radius: var(--priBorRad) !important;
+    transition: var(--transitionTime) !important;
+}
