@@ -58,11 +58,11 @@ export default function Home() {
             placeholder="password"
           />
           <div className="loginSplash">
-            Welcome to the beta of Enipsa!
+            Welcome to the beta of Aspine2!
             <br />
             This is actively being worked on,
             <br />
-            check out the <a href="https://github.com/enipsa/aspine2">repository on our github</a>!
+            check out the <a href="https://github.com/Aspine/aspine2">repository on our github</a>!
             <br />
             <br />
           </div>
