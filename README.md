@@ -20,3 +20,5 @@ run this:
 ```shell
 sass ./src/app/css/globals.scss .src/app/css/globals.css
 ```
+
+or optionally install the live sass compile extension on vscode. The config file is already in the repository, just install it and scss should work correctly
