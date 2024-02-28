@@ -41,7 +41,7 @@ h1 {
 .navbar {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
   padding: var(--inside-padding);
   background-color: var(--alt-background-color);
 }
@@ -148,9 +148,12 @@ h1 {
   display: inline;
 }
 
+.page-main {
+  padding: var(--inside-padding);
+}
+
 .grades-table {
   width: 100%;
-  padding: var(--inside-padding);
 }
 
 .grades-table tr td:nth-child(2) {
@@ -184,4 +187,12 @@ h1 {
 
 .grades-table tr th:nth-child(4) {
   text-align: right;
+}
+
+.gpa-container {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: #ffffff 1px solid;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
 }
