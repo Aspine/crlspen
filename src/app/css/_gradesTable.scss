@@ -39,3 +39,15 @@
 .grades-table tr th:nth-child(4) {
     text-align: right;
 }
+
+.gpa-box p {
+    margin: 0;
+}
+
+.gpa-container {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: #ffffff 1px solid;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+  }

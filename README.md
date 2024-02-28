@@ -12,3 +12,11 @@ npm run dev
 ```
 
 open `localhost:3000`
+
+## To compile Sass:
+
+run this:
+
+```shell
+sass ./src/app/css/globals.scss .src/app/css/globals.css
+```

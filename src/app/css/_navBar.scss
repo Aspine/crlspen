@@ -4,7 +4,7 @@
     align-items: center;
     padding: var(--inside-padding);
     background-color: var(--alt-background-color);
-    border-radius: 20px;
+    border-radius: 0;
 }
 
 .navlinks a {
@@ -21,7 +21,7 @@
 .title-link {
     text-decoration: none;
     color: var(--text-color);
-    transition: 0var(--transitionTime);
+    transition: var(--transitionTime);
 }
 
 .title-link:hover {

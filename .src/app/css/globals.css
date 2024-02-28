@@ -5,13 +5,9 @@
   --inside-padding: 15px;
   --link-hightlight: #8d7cff;
   --link-hightlightTrans: #8d7cff40;
-  --uniMargin: 20px;
+  --uniMargin: 2vh;
   --priBorRad: 20px;
   --transitionTime: .3s;
-}
-
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .navbar {
@@ -126,6 +122,7 @@ body {
 
 .grades-table {
   width: 100%;
+  padding: var(--inside-padding);
 }
 
 .grades-table tr td:nth-child(2) {
@@ -161,18 +158,11 @@ body {
   text-align: right;
 }
 
-.gpa-container {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: #ffffff 1px solid;
-  padding-bottom: 20px;
-  margin-bottom: 10px;
-}
-
 html {
   margin: 0;
   padding: 0;
   border: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 /* Body */
@@ -180,6 +170,7 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 /* Buttons */
@@ -220,12 +211,10 @@ a:hover {
   font-weight: bold;
   font-size: 15.5px;
   text-shadow: 0px 0px 20px var(--link-hightlightTrans);
-}/*# sourceMappingURL=globals.css.map */
+}
 
 .page-main {
-  padding: var(--inside-padding);
+  padding: 20px;
 }
 
-.gpa-box p {
-  margin: 0;
-}
+/*# sourceMappingURL=globals.css.map */
