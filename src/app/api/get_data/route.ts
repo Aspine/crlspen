@@ -1,13 +1,9 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import Chromium from "@sparticuz/chromium";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-
-function delay(time: number) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, time);
-  });
-}
+import delay from "@/utils/delay";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const reqBody = await req.json();
@@ -21,7 +17,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const passwordString = String(password);
 
   try {
-    const browser = await puppeteer.launch({ headless: true });
+
+    const browser = await puppeteer.launch({
+        args: Chromium.args,
+        defaultViewport: Chromium.defaultViewport,
+        executablePath: await Chromium.executablePath(),
+        headless: false,
+    });
+
     const page = await browser.newPage();
 
     // log in to aspen
@@ -33,13 +36,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
     await page.type("#password", passwordString);
     await page.click("#logonButton");
 
-    await delay(250);
+    // scrape class data
 
     await page.goto(
       "https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list",
     );
 
-    // scrape class data
     const classes = await page.evaluate(() => {
       const classRows = document.querySelectorAll(
         "table > tbody > tr.listCell",
@@ -92,6 +94,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
     } else {
       console.error("res object does not have a status function");
     }
+
+    console.log(error)
 
     return NextResponse.json(
       { error: "Internal Server Error" },
