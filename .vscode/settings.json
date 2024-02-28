@@ -1,0 +1,14 @@
+{
+    "scss.lint.duplicateProperties": "warning",
+    "scss.lint.float": "warning",
+    "liveSassCompile.settings.autoprefix": [],
+    "liveSassCompile.settings.forceBaseDirectory": "",
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "expanded",
+            "extensionName": ".css",
+            "savePath": "/src/app/css"
+        }
+    ],
+    "scss.hover.references": false
+}
