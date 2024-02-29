@@ -39,7 +39,7 @@ export default function Home() {
       <div className="page-main">
         <div className="gpa-container">
           <div className="gpa-box hUnweightedGpa">
-            <p>Unweighted: {hUnweightedGpa.toFixed(2)}</p>
+            <p>100 Scale: {hUnweightedGpa.toFixed(2)}</p>
           </div>
           <div className="gpa-box fWeightedGpa">
             <p>Weighted: {fWeightedGpa.toFixed(2)}</p>
