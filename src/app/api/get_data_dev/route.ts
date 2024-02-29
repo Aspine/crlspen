@@ -87,7 +87,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 )
             );
             const scheduleDetails = scheduleRows.map((row) => {
-                const period = row.querySelector("td:first-child th").textContent.match(/\d+/)[0];
+                const period = row.querySelector("td:first-child th")?.textContent?.match(/\d+/)?.[0];
                 const scheduleDetailCell = row.querySelector(
                     "td:nth-child(2) td"
                 );
