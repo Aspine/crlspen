@@ -80,7 +80,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
                     teacherName,
                     room,
                     grade,
-                    assignments: [],
                 };
             });
         });
@@ -89,7 +88,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             "https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd"
         );
 
-        var fullClassData: ClassDataWithAssignments[] = [];
+        var assignmentsData: Assignment[][] = [];
 
         for (let i = 0; i < classes.length; i++) {
             console.log("Scraping assignments for", classes[i].className);
@@ -107,13 +106,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 return Array.from(rows).map((row) => {
                     const name = row
                         .querySelector("td:nth-child(3)")
-                        ?.textContent?.replace(/\n/g, "");
+                        ?.textContent?.replace(/\n/g, "") || "";
                     const dueDate = row
                         .querySelector("td:nth-child(5)")
-                        ?.textContent?.replace(/\n/g, "");
+                        ?.textContent?.replace(/\n/g, "") || "";
                     const gradeCategory = row
                         .querySelector("td:nth-child(2)")
-                        ?.textContent?.replace(/\n/g, "");
+                        ?.textContent?.replace(/\n/g, "") || "";
                     const gradeString = row
                         .querySelector("td:nth-child(6) > table > tbody > tr > td > div > span")
                         ?.textContent?.replace(/\n/g, "");
@@ -140,11 +139,18 @@ export async function POST(req: NextRequest, res: NextResponse) {
             // classes[i].assignments = tableRows;
             console.log(tableRows);
 
+            assignmentsData.push(tableRows);
+
             await page.click("button#nextButton");
             await delay(1000);
         }
 
-        
+        const fullClassData = classes.map((classData, index) => {
+            return {
+                ...classData,
+                assignments: assignmentsData[index],
+            };
+        })
 
         // scrape schedule data
 
@@ -232,6 +238,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         console.log(classes);
 
         console.log(currentSchedule);
+
+        console.log(JSON.stringify(fullClassData));
 
         // send class data to client
         if (classes.length <= 0) {
