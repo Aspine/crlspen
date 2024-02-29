@@ -14,9 +14,8 @@ export type GPAType = 'fWeighted' | 'fUnweighted' | 'hUnweighted' | "hWeighted";
 export interface ClassData {
     teacherName: string;
     className: string;
-    grade: string;
+    grade: number | null;
     room: string;
-    realGrade: number | null;
 }
 
 export interface ClassDataWithAssignments extends ClassData {

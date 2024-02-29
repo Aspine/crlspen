@@ -272,3 +272,24 @@ a:hover {
 .events-table tr td:nth-child(4) {
   text-align: right;
 }
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+  /* 100% {
+    background-position: 0% 50%;
+  } */
+}
+
+.hGrade {
+  background-image: repeating-linear-gradient(90deg, violet, indigo, blue, green, yellow, orange, red, violet);
+  text-align: center;
+  background-size: 50% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow 8s linear infinite;
+}

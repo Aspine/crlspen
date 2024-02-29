@@ -3,7 +3,17 @@ import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import delay from "@/utils/delay";
-import getRealGrade from "@/utils/getRealGrade";
+import { ClassData, ClassDataWithAssignments, Assignment } from "@/types";
+
+function getGradeFromString(grade: string): number | null {
+    const gradeRegex = /([0-9]*\.?[0-9]*)/g;
+    const matches = grade.match(gradeRegex);
+    if (matches && !isNaN(parseFloat(matches[0]))) {
+      return parseFloat(matches[0]);
+    } else {
+      return null;
+    }
+}
 
 export async function POST(req: NextRequest, res: NextResponse) {
     const reqBody = await req.json();
@@ -51,18 +61,25 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 const room = row
                     .querySelector("td:nth-child(5)")
                     ?.textContent?.replace(/\n/g, "");
-                const grade = row
+                const gradeString = row
                     .querySelector("td:nth-child(8)")
                     ?.textContent?.replace(/\n/g, "");
 
-                const realGrade = getRealGrade(grade || "");
+                var grade: number | null;
+
+                const gradeRegex = /([0-9]*\.?[0-9]*)/g;
+                const matches = gradeString?.match(gradeRegex);
+                if (matches && !isNaN(parseFloat(matches[0]))) {
+                    grade = parseFloat(matches[0]);
+                } else {
+                    grade = null;
+                }
 
                 return {
                     className,
                     teacherName,
                     room,
                     grade,
-                    realGrade,
                     assignments: [],
                 };
             });
@@ -71,6 +88,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         await page.goto(
             "https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd"
         );
+
+        var fullClassData: ClassDataWithAssignments[] = [];
 
         for (let i = 0; i < classes.length; i++) {
             console.log("Scraping assignments for", classes[i].className);
@@ -86,7 +105,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 )
 
                 return Array.from(rows).map((row) => {
-                    const assignmentName = row
+                    const name = row
                         .querySelector("td:nth-child(3)")
                         ?.textContent?.replace(/\n/g, "");
                     const dueDate = row
@@ -95,18 +114,25 @@ export async function POST(req: NextRequest, res: NextResponse) {
                     const gradeCategory = row
                         .querySelector("td:nth-child(2)")
                         ?.textContent?.replace(/\n/g, "");
-                    const grade = row
+                    const gradeString = row
                         .querySelector("td:nth-child(6) > table > tbody > tr > td > div > span")
                         ?.textContent?.replace(/\n/g, "");
 
-                    const realGrade = getRealGrade(grade || "");
+                    var grade: number | null;
+
+                    const gradeRegex = /([0-9]*\.?[0-9]*)/g;
+                    const matches = gradeString?.match(gradeRegex);
+                    if (matches && !isNaN(parseFloat(matches[0]))) {
+                        grade = parseFloat(matches[0]);
+                    } else {
+                        grade = null;
+                    }
 
                     return {
-                        assignmentName,
+                        name,
                         dueDate,
                         gradeCategory,
                         grade,
-                        realGrade,
                     };
                 });
             });

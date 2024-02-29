@@ -19,7 +19,7 @@ export default function Home() {
 
   const gpaInput = classData.map((data) => {
     return {
-      grade: data.realGrade,
+      grade: data.grade,
       credits: 10,
       ap: data.className.startsWith("AP")
     };
@@ -60,7 +60,7 @@ export default function Home() {
               <tr key={index}>
                 <td>{data.teacherName}</td>
                 <td>{data.className}</td>
-                <td>{data.realGrade !== null ? data.realGrade.toFixed(2) : "-"}</td>
+                <td className={data.grade === 100 ? "hGrade" : ""}>{data.grade !== null ? data.grade.toFixed(2) : "-"}</td>
                 <td>{data.room}</td>
               </tr>
             ))}
