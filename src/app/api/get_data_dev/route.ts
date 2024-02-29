@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import delay from "@/utils/delay";
+import getRealGrade from "@/utils/getRealGrade";
 
 export async function POST(req: NextRequest, res: NextResponse) {
     const reqBody = await req.json();
@@ -54,11 +55,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
                     .querySelector("td:nth-child(8)")
                     ?.textContent?.replace(/\n/g, "");
 
+                const realGrade = getRealGrade(grade || "");
+
                 return {
                     className,
                     teacherName,
                     room,
                     grade,
+                    realGrade,
+                    assignments: [],
                 };
             });
         });
@@ -73,7 +78,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             const tableRows = await page.evaluate(() => {
                 if (document.querySelector("table > tbody > tr.listCell > td > div.listNoRecordsText")) {
                     console.log("No records found");
-                    return {};
+                    return [];
                 }
 
                 const rows = document.querySelectorAll(
@@ -94,20 +99,26 @@ export async function POST(req: NextRequest, res: NextResponse) {
                         .querySelector("td:nth-child(6) > table > tbody > tr > td > div > span")
                         ?.textContent?.replace(/\n/g, "");
 
+                    const realGrade = getRealGrade(grade || "");
+
                     return {
                         assignmentName,
                         dueDate,
                         gradeCategory,
                         grade,
+                        realGrade,
                     };
                 });
             });
 
+            // classes[i].assignments = tableRows;
             console.log(tableRows);
 
             await page.click("button#nextButton");
             await delay(1000);
         }
+
+        
 
         // scrape schedule data
 
@@ -184,9 +195,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
     console.log(schedule);
 
     // send class and schedule data to client
-    cookies().set("classData", JSON.stringify(classes));
-    cookies().set("scheduleData", JSON.stringify(schedule));
-      */
+    */
+    
+        cookies().set("classData", JSON.stringify(classes));
+    // cookies().set("scheduleData", JSON.stringify(schedule));
+    
 
         await browser.close();
 

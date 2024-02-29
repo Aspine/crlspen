@@ -3,20 +3,11 @@ import { cookies } from "next/headers";
 import NavBar from "@/components/navBar";
 import calculateGpa from "@/utils/getGpa";
 import { ClassData } from "@/types";
+import getRealGrade from "@/utils/getRealGrade";
 
 export default function Home() {
   const classData: ClassData[] = JSON.parse(cookies().get("classData")?.value || "[]");
   console.log(classData);
-
-  for (let item of classData) {
-    const gradeRegex = /([0-9]*\.?[0-9]*)/g;
-    const matches = item.grade.match(gradeRegex);
-    if (matches && !isNaN(parseFloat(matches[0]))) {
-      item.realGrade = parseFloat(matches[0]);
-    } else {
-      item.realGrade = null;
-    }
-  }
 
   for (let item of classData) {
     const teachers = item.teacherName.split(';').map(teacher => {

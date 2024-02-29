@@ -18,3 +18,14 @@ export interface ClassData {
     room: string;
     realGrade: number | null;
 }
+
+export interface ClassDataWithAssignments extends ClassData {
+    assignments: Assignment[];
+}
+
+export interface Assignment {
+    name: string;
+    dueDate: string;
+    gradeCategory: string;
+    grade: number | null;
+}
