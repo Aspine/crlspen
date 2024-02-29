@@ -1,10 +1,11 @@
 import React from "react";
 import { cookies } from "next/headers";
 import NavBar from "@/components/navBar";
+import { ScheduleData } from "@/types";
 
 export default function Schedule() {
   const scheduleCookie = cookies().get("scheduleData");
-  const scheduleData = scheduleCookie ? JSON.parse(scheduleCookie.value) : [];
+  const scheduleData: ScheduleData[] = scheduleCookie ? JSON.parse(scheduleCookie.value) : [];
 
   console.log(scheduleData);
 
