@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const passwordString = String(password);
 
     try {
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({ headless: false });
         const page = await browser.newPage();
 
         // log in to aspen
@@ -62,6 +62,54 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 };
             });
         });
+
+        await page.goto(
+            "https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd"
+        );
+
+        for (let i = 0; i < classes.length; i++) {
+            console.log("Scraping assignments for", classes[i].className);
+
+            const tableRows = await page.evaluate(() => {
+                if (document.querySelector("table > tbody > tr.listCell > td > div.listNoRecordsText")) {
+                    console.log("No records found");
+                    return {};
+                }
+
+                const rows = document.querySelectorAll(
+                    "table > tbody > tr.listCell"
+                )
+
+                return Array.from(rows).map((row) => {
+                    const assignmentName = row
+                        .querySelector("td:nth-child(3)")
+                        ?.textContent?.replace(/\n/g, "");
+                    const dueDate = row
+                        .querySelector("td:nth-child(5)")
+                        ?.textContent?.replace(/\n/g, "");
+                    const gradeCategory = row
+                        .querySelector("td:nth-child(2)")
+                        ?.textContent?.replace(/\n/g, "");
+                    const grade = row
+                        .querySelector("td:nth-child(6) > table > tbody > tr > td > div > span")
+                        ?.textContent?.replace(/\n/g, "");
+
+                    return {
+                        assignmentName,
+                        dueDate,
+                        gradeCategory,
+                        grade,
+                    };
+                });
+            });
+
+            console.log(tableRows);
+
+            await page.click("button#nextButton");
+            await delay(1000);
+        }
+
+        // scrape schedule data
 
         const currentDate = new Date();
         const formattedDate =
