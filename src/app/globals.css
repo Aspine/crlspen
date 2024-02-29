@@ -289,7 +289,7 @@ a:hover {
   background-image: repeating-linear-gradient(90deg, violet, indigo, blue, green, yellow, orange, red, violet);
   text-align: center;
   background-size: 50% 100%;
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: rainbow 8s linear infinite;
 }
