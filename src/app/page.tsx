@@ -6,14 +6,14 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [agreeTos, setAgreeTos] = useState(false);
-  const [loading, setLoading] = useState(false); // Added loading state
+  const [loading, setLoading] = useState(false);
 
   const handleCheckboxChange = () => {
     setAgreeTos(!agreeTos);
   };
 
   const handleLogin = async () => {
-    setLoading(true); // Set loading state to true
+    setLoading(true);
 
     // different fetch url for dev and prod
     // const response = await fetch("/get_data/api", { // prod
@@ -33,12 +33,12 @@ export default function Home() {
       console.log("Login failed");
     }
 
-    setLoading(false); // Set loading state to false after API response
+    setLoading(false);
   };
 
   return (
     <main className="loginPage">
-      {loading ? ( // Conditionally render loading screen
+      {loading ? (
         <div className="loading-screen">Loading...</div>
       ) : (
         <div className="login-box" onSubmit={handleLogin}>
@@ -62,7 +62,7 @@ export default function Home() {
             <br />
             This is actively being worked on,
             <br />
-            check out the <a href="https://github.com/Aspine/aspine2">repository on our github</a>!
+            check out the <a href="https://github.com/Aspine/CRLSpen">repository on our github</a>!
             <br />
             <br />
           </div>

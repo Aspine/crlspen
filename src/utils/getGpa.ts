@@ -19,12 +19,11 @@ export default function calculateGPA(grades: Grade[], type: GPAType): number {
                 totalGrade += gradePair.post * obj.credits;
                 if (obj.ap && type == "fWeighted") { totalGrade += 1 * obj.credits };
                 totalCredits += obj.credits;
-                added = true; // Ensure we only add the first matching grade pair
+                added = true;
             }
         }
     });
 
-    // Avoid division by zero
     if (totalCredits === 0) return 0;
     return totalGrade / totalCredits;
 }
