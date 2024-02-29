@@ -104,12 +104,40 @@ export async function POST(req: NextRequest, res: NextResponse) {
         });
 
         /* 
-      {
-        className: "AP dickriding",
-        teacherName: "Samule Mayle",
-        room: "0000",
-        period: "1"
-      }
+                    My way of doing it jsut for reference, I don't think it succesfully scraped off page.
+          await page.goto(
+        `https://aspen.cpsd.us/aspen/studentScheduleMatrix.do?navkey=myInfo.sch.matrix&termOid=&schoolOid=&k8Mode=&viewDate=${dateString}&userEvent=0`,
+        { waitUntil: "networkidle2" }
+    );
+
+    // scrape schedule data
+    const schedule = await page.evaluate(() => {
+      const scheduleRows = document.querySelectorAll("tr");
+      return Array.from(scheduleRows).map((row) => {
+        const detailsElement = row.querySelector("td[style='width: 125px']");
+        const details = detailsElement ? detailsElement.innerHTML.split('<br>') : null;
+        const time = row.querySelector("td[align='center']")?.textContent?.trim();
+
+        if (details) {
+          return {
+            classCode: details[0],
+            className: details[1],
+            teacherName: details[2],
+            room: details[3],
+            time,
+          };
+        }
+      }).filter(Boolean); // filter out undefined items
+    });
+
+    await browser.close();
+
+    console.log(classes);
+    console.log(schedule);
+
+    // send class and schedule data to client
+    cookies().set("classData", JSON.stringify(classes));
+    cookies().set("scheduleData", JSON.stringify(schedule));
       */
 
         await browser.close();
@@ -120,9 +148,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         // send class data to client
         if (classes.length <= 0) {
-            // my kinda shit way of checking if the login failed, E.G. login was wrong. Make this better later
+            // login failed
             console.log("IT DONDA WORKA?!");
-            return NextResponse.redirect("/", 302); // redirect back to login page, cus, yk, do that! (im tired ok? this dont have to make sense, as long as it doesn't error)
+            return NextResponse.redirect("/", 302); // redirect back to login page,
         } else {
             console.log("IT WORKA?!");
             cookies().set("classData", JSON.stringify(classes));
