@@ -80,11 +80,43 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         const source = await page.content();
 
-        console.log(source);
+        const currentSchedule = await page.evaluate(() => {
+            const scheduleRows = Array.from(
+                document.querySelectorAll(
+                    "table > tbody > tr > td > table > tbody > tr:not(.listHeader)"
+                )
+            );
+            const scheduleDetails = scheduleRows.map((row) => {
+                const period = row.querySelector("td:first-child th").textContent.match(/\d+/)[0];
+                const scheduleDetailCell = row.querySelector(
+                    "td:nth-child(2) td"
+                );
+                /*
+                    return {
+                        className,
+                        teacherName,
+                        room,
+                        period,
+                    };
+                */
+            });
+            return scheduleDetails.filter((detail) => detail);
+        });
+
+        /* 
+      {
+        className: "AP dickriding",
+        teacherName: "Samule Mayle",
+        room: "0000",
+        period: "1"
+      }
+      */
 
         await browser.close();
 
         console.log(classes);
+
+        console.log(currentSchedule);
 
         // send class data to client
         if (classes.length <= 0) {
