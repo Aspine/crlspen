@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const passwordString = String(password);
 
     try {
-        const browser = await puppeteer.launch({ headless: false });
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
 
         // log in to aspen

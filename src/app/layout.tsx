@@ -5,7 +5,7 @@ import "@/app/globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Aspine 2",
+  title: "CRLSpen",
   description: "Lets students check their grades and GPA",
 };
 
