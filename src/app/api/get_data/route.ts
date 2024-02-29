@@ -22,7 +22,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         args: Chromium.args,
         defaultViewport: Chromium.defaultViewport,
         executablePath: await Chromium.executablePath(),
-        headless: false,
+        headless: true,
     });
 
     const page = await browser.newPage();
