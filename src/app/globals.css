@@ -230,3 +230,45 @@ a:hover {
 .gpa-box p {
   margin: 0;
 }
+
+.events-table {
+  width: 100%;
+}
+
+.events-table tr td:nth-child(1) {
+  text-align: right;
+  font-weight: 700;
+  padding-right: 20px;
+}
+
+.events-table tr td:nth-child(2) {
+  text-align: left;
+  width: 0%;
+}
+
+.events-table tr th:nth-child(1) {
+  text-align: right;
+  padding-right: 20px;
+}
+
+.events-table tr th:nth-child(2) {
+  text-align: left;
+}
+
+.events-table tr th:nth-child(3) {
+  text-align: left;
+  padding-left: 20px;
+}
+
+.events-table tr td:nth-child(3) {
+  text-align: left;
+  padding-left: 20px;
+}
+
+.events-table tr th:nth-child(4) {
+  text-align: right;
+}
+
+.events-table tr td:nth-child(4) {
+  text-align: right;
+}
