@@ -17,7 +17,7 @@ export default function Home() {
 
     // different fetch url for dev and prod
     // const response = await fetch("/get_data/api", { // prod
-    const response = await fetch("/get_data_dev/api", { // dev
+    const response = await fetch("/api/get_data_dev/", { // dev
       method: "POST",
       headers: {
         "Content-Type": "application/json",
