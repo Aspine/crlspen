@@ -58,7 +58,7 @@ export default function Home() {
             placeholder="password"
           />
           <div className="loginSplash">
-            Welcome to the beta of Aspine2!
+            Welcome to the beta of CRLSpen!
             <br />
             This is actively being worked on,
             <br />
