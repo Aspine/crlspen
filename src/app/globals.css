@@ -3,7 +3,7 @@
   --text-color: #ffffff;
   --alt-background-color: #1f1f1f;
   --inside-padding: 15px;
-  --link-hightlight: #8d7cff;
+  --link-hightlight: #22c50cc0;
   --link-hightlightTrans: #8d7cff40;
   --uniMargin: 20px;
   --priBorRad: 20px;
@@ -63,13 +63,13 @@ body {
   color: white;
   width: 100%;
   border: 1px solid #ffffff;
-  border-radius: 0;
+  border-radius: 10px;
   box-sizing: border-box;
 }
 
 .login-box button:hover {
-  background-color: #ffffff;
-  color: #000000;
+  /* background-color: #ffffff; */
+  color: #22c50cc0;
 }
 
 .login-box input {
@@ -91,11 +91,6 @@ body {
 .loginSplash {
   text-align: center;
   text-decoration: none;
-}
-
-.loginSubmissionButton {
-  border-radius: var(--priBorRad) !important;
-  transition: var(--transitionTime) !important;
 }
 
 .dashboard {
