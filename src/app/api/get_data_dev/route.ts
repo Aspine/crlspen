@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import delay from "@/utils/delay";
-import { ClassData, ClassDataWithAssignments, Assignment } from "@/types";
+import { Assignment, Student } from "@/types";
 
 function getGradeFromString(grade: string): number | null {
     const gradeRegex = /([0-9]*\.?[0-9]*)/g;
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 const className = row
                     .querySelector("td:nth-child(6)")
                     ?.textContent?.replace(/\n/g, "");
-                const teacherName = row
+                const teacherNameRaw = row
                     .querySelector("td:nth-child(4)")
                     ?.textContent?.replace(/\n/g, "");
                 const room = row
@@ -67,6 +67,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
                 var grade: number | null;
 
+                const teacherName = teacherNameRaw?.split(";").map((name) => {
+                    const [lastName, firstName] = name.trim().split(",").map((name) => name.trim());
+                    return firstName && lastName ? `${firstName} ${lastName}` : name.trim();
+                }).join(", ");
+
                 const gradeRegex = /([0-9]*\.?[0-9]*)/g;
                 const matches = gradeString?.match(gradeRegex);
                 if (matches && !isNaN(parseFloat(matches[0]))) {
@@ -75,14 +80,21 @@ export async function POST(req: NextRequest, res: NextResponse) {
                     grade = null;
                 }
 
+                const classCookieName = row
+                    .querySelector("td:nth-child(2) > a")
+                    ?.textContent?.replace(/\n/g, "");
+
                 return {
                     className,
+                    classCookieName,
                     teacherName,
                     room,
                     grade,
                 };
             });
         });
+
+        console.log(classes);
 
         await page.goto(
             "https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd"
@@ -229,6 +241,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
     // send class and schedule data to client
     */    
 
+        await browser.close();
+
         cookies().set({
             name: 'classData',
             value: JSON.stringify(classes, null, 2),
@@ -236,7 +250,22 @@ export async function POST(req: NextRequest, res: NextResponse) {
             path: '/',
         });
 
-        await browser.close();
+        // doesn't work, assignments sizes are too large to be stored in cookies
+        //
+        // const studentData: Student = {
+        //     name: "Test Student",
+        //     grade: 9,
+        //     classes: classes.filter(classData => classData.classCookieName !== undefined).map((classData) => classData.className) || null,
+        // };
+        //
+        // console.log(studentData);
+        //
+        // for (let i = 0; i < fullClassData.length; i++) {
+        //     const classCookieName = fullClassData[i].classCookieName;
+        //     if (classCookieName) {
+        //         cookies().set(classCookieName, JSON.stringify(fullClassData[i], null, 2));
+        //     }
+        // }
 
         // console.log(currentSchedule);
 

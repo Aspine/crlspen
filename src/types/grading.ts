@@ -14,6 +14,7 @@ export type GPAType = 'fWeighted' | 'fUnweighted' | 'hUnweighted';
 export interface ClassData {
     teacherName: string;
     className: string;
+    classCookieName: string;
     grade: number | null;
     room: string;
 }

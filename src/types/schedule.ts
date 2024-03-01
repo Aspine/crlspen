@@ -3,4 +3,4 @@ export interface ScheduleData {
     subject: string;
     teacher: string;
     room: string;
-}  
+} 

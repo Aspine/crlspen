@@ -8,14 +8,6 @@ export default function Home() {
   const classData: ClassDataWithAssignments[] = JSON.parse(cookies().get("classData")?.value || "[]");
   console.log(classData);
 
-  for (let item of classData) {
-    const teachers = item.teacherName.split(';').map(teacher => {
-      const [lastName, firstName] = teacher.trim().split(',').map(name => name.trim());
-      return firstName && lastName ? `${firstName} ${lastName}` : teacher.trim();
-    });
-    item.teacherName = teachers.join(', ');
-  }
-
   const gpaInput = classData.map((data) => {
     return {
       grade: data.grade,
