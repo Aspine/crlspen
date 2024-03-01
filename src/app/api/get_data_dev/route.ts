@@ -227,19 +227,18 @@ export async function POST(req: NextRequest, res: NextResponse) {
     console.log(schedule);
 
     // send class and schedule data to client
-    */
-    
-        cookies().set("classData", JSON.stringify(classes));
-    // cookies().set("scheduleData", JSON.stringify(schedule));
-    
+    */    
+
+        cookies().set({
+            name: 'classData',
+            value: JSON.stringify(classes, null, 2),
+            httpOnly: true,
+            path: '/',
+        });
 
         await browser.close();
 
-        console.log(classes);
-
-        console.log(currentSchedule);
-
-        console.log(JSON.stringify(fullClassData));
+        // console.log(currentSchedule);
 
         // send class data to client
         if (classes.length <= 0) {
@@ -248,8 +247,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             return NextResponse.redirect("/", 302); // redirect back to login page,
         } else {
             console.log("IT WORKA?!");
-            cookies().set("classData", JSON.stringify(classes));
-            return NextResponse.json({ text: classes }, { status: 200 });
+            return NextResponse.json({ text: fullClassData }, { status: 200 });
         }
     } catch (error) {
         console.error("Error during scraping:", error);

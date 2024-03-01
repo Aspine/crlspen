@@ -2,11 +2,10 @@ import React from "react";
 import { cookies } from "next/headers";
 import NavBar from "@/components/navBar";
 import calculateGpa from "@/utils/getGpa";
-import { ClassData } from "@/types";
-import getRealGrade from "@/utils/getRealGrade";
+import { ClassData, ClassDataWithAssignments } from "@/types";
 
 export default function Home() {
-  const classData: ClassData[] = JSON.parse(cookies().get("classData")?.value || "[]");
+  const classData: ClassDataWithAssignments[] = JSON.parse(cookies().get("classData")?.value || "[]");
   console.log(classData);
 
   for (let item of classData) {
