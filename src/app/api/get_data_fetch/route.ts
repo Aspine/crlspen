@@ -40,7 +40,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         // log in to aspen and get session ID
 
         await page.goto("https://aspen.cpsd.us/aspen/logon.do", {
-            waitUntil: "networkidle2",
+            waitUntil: "domcontentloaded",
         });
 
         await page.type("#username", usernameString);
