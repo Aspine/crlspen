@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
+import falconImage from "@/../public/falcon.png";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -38,7 +40,15 @@ export default function Home() {
   return (
     <main className="loginPage">
       {loading ? (
-        <div className="loading-screen">Loading...</div>
+        <div className="loading-screen">
+          <Image
+            src={falconImage}
+            alt="loading"
+            width={100}
+            height={100}
+            className="loading-image"
+          />
+        </div>
       ) : (
         <div className="login-box" onSubmit={handleLogin}>
           <input
