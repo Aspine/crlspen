@@ -11,14 +11,14 @@ export interface GradePair {
 
 export type GPAType = 'fWeighted' | 'fUnweighted' | 'hUnweighted';
 
-export interface ClassData {
+export interface Class {
     name: string;
     teacher: string;
     grade: number | null;
     room: number;
 }
 
-export interface ClassDataWithAssignments extends ClassData {
+export interface ClassWithAssignments extends Class {
     assignments: Assignment[];
 }
 

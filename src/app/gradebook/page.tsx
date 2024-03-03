@@ -2,11 +2,10 @@ import React from "react";
 import { cookies } from "next/headers";
 import NavBar from "@/components/navBar";
 import calculateGpa from "@/utils/getGpa";
-import { ClassData, ClassDataWithAssignments } from "@/types";
+import { ClassWithAssignments } from "@/types";
 
 export default function Home() {
-  const classData: ClassDataWithAssignments[] = JSON.parse(cookies().get("classData")?.value || "[]");
-  console.log(classData);
+  const classData: ClassWithAssignments[] = JSON.parse(cookies().get("classData")?.value || "[]");
 
   const gpaInput = classData.map((data) => {
     return {
@@ -16,13 +15,9 @@ export default function Home() {
     };
   });
 
-  console.log(gpaInput);
-
   const hUnweightedGpa = calculateGpa(gpaInput, "hUnweighted");
   const fUnweightedGpa = calculateGpa(gpaInput, "fUnweighted");
   const fWeightedGpa = calculateGpa(gpaInput, "fWeighted");
-
-  console.log(classData);
 
   return (
     <main>

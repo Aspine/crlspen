@@ -3,7 +3,8 @@ import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import delay from "@/utils/delay";
-import { Assignment, Student } from "@/types";
+import { Assignment, Class } from "@/types";
+import cheerio from "cheerio";
 
 function getGradeFromString(grade: string): number | null {
     const gradeRegex = /([0-9]*\.?[0-9]*)/g;
@@ -16,10 +17,9 @@ function getGradeFromString(grade: string): number | null {
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
-    const reqBody = await req.json();
-
     // parse username and password from request body
-    console.log(reqBody);
+    
+    const reqBody = await req.json();
 
     const { username, password } = reqBody;
 
@@ -27,12 +27,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const passwordString = String(password);
 
     try {
+        const startTimeLogin = new Date();
+
         const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
 
         // log in to aspen
         await page.goto("https://aspen.cpsd.us/aspen/logon.do", {
-            waitUntil: "networkidle2",
+            waitUntil: "domcontentloaded",
         });
 
         await page.type("#username", usernameString);
@@ -43,250 +45,164 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         const browserCookies = await page.cookies();
 
-        console.log(await page.cookies());
-
         const requestHeaders: HeadersInit = new Headers();
         requestHeaders.set('Content-Type', 'application/json');
         requestHeaders.set('Cookie', browserCookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; '));
 
-        const classesTest = await fetch("https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list", {
+        const endTimeLogin = new Date();
+        const elapsedTimeLogin = endTimeLogin.getTime() - startTimeLogin.getTime();
+        console.log("logged in in", elapsedTimeLogin, "ms");
+
+        // get class data
+
+        const startTimeClasses = new Date();
+
+        const classes: Class[] = await fetch("https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list", {
             method: "GET",
             headers: requestHeaders,
-        }).then((res) => res.text());
+        }).then((res) => res.text()).then(function(html) {
 
-        console.log(JSON.stringify(classesTest, null, 2));
+            const $ = cheerio.load(html);
 
-        await page.goto(
-            "https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list"
-        );
+            const classes: any[] = [];
 
-        // scrape class data
-        const classes = await page.evaluate(() => {
-            const classRows = document.querySelectorAll(
-                "table > tbody > tr.listCell"
-            );
+            const tableRows = $("table > tbody > tr.listCell");
 
-            return Array.from(classRows).map((row) => {
-                const className = row
-                    .querySelector("td:nth-child(6)")
-                    ?.textContent?.replace(/\n/g, "");
-                const teacherNameRaw = row
-                    .querySelector("td:nth-child(4)")
-                    ?.textContent?.replace(/\n/g, "");
-                const room = row
-                    .querySelector("td:nth-child(5)")
-                    ?.textContent?.replace(/\n/g, "");
-                const gradeString = row
-                    .querySelector("td:nth-child(8)")
-                    ?.textContent?.replace(/\n/g, "");
+            tableRows.each((index, row) => {
+                const name = $(row).find("td:nth-child(6)").text().replace(/\n/g, "");
+                const teacherRaw = $(row).find("td:nth-child(4)").text().replace(/\n/g, "");
+                const gradeRaw = $(row).find("td:nth-child(8)").text().replace(/\n/g, "");
+                const roomRaw = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
 
-                var grade: number | null;
-
-                const teacherName = teacherNameRaw?.split(";").map((name) => {
+                const teacher = teacherRaw?.split(";").map((name) => {
                     const [lastName, firstName] = name.trim().split(",").map((name) => name.trim());
                     return firstName && lastName ? `${firstName} ${lastName}` : name.trim();
                 }).join(", ");
 
-                const gradeRegex = /([0-9]*\.?[0-9]*)/g;
-                const matches = gradeString?.match(gradeRegex);
-                if (matches && !isNaN(parseFloat(matches[0]))) {
-                    grade = parseFloat(matches[0]);
-                } else {
-                    grade = null;
-                }
+                const grade = getGradeFromString(gradeRaw);
 
-                const classCookieName = row
-                    .querySelector("td:nth-child(2) > a")
-                    ?.textContent?.replace(/\n/g, "");
+                const room = parseInt(roomRaw);
 
-                return {
-                    className,
-                    classCookieName,
-                    teacherName,
-                    room,
+                classes.push({
+                    name,
+                    teacher,
                     grade,
-                };
-            });
-        });
-
-        // console.log(classes);
-
-        // scrape assignment data
-
-        await page.goto(
-            "https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd"
-        );
-
-        var assignmentsData: Assignment[][] = [];
-
-        for (let i = 0; i < classes.length; i++) {
-            // console.log("Scraping assignments for", classes[i].className);
-
-            const tableRows = await page.evaluate(() => {
-                if (document.querySelector("table > tbody > tr.listCell > td > div.listNoRecordsText")) {
-                    console.log("No records found");
-                    return [];
-                }
-
-                const rows = document.querySelectorAll(
-                    "table > tbody > tr.listCell"
-                )
-
-                return Array.from(rows).map((row) => {
-                    const name = row
-                        .querySelector("td:nth-child(3)")
-                        ?.textContent?.replace(/\n/g, "") || "";
-                    const dueDate = row
-                        .querySelector("td:nth-child(5)")
-                        ?.textContent?.replace(/\n/g, "") || "";
-                    const gradeCategory = row
-                        .querySelector("td:nth-child(2)")
-                        ?.textContent?.replace(/\n/g, "") || "";
-                    const gradeString = row
-                        .querySelector("td:nth-child(6) > table > tbody > tr > td > div > span")
-                        ?.textContent?.replace(/\n/g, "");
-
-                    var grade: number | null;
-
-                    const gradeRegex = /([0-9]*\.?[0-9]*)/g;
-                    const matches = gradeString?.match(gradeRegex);
-                    if (matches && !isNaN(parseFloat(matches[0]))) {
-                        grade = parseFloat(matches[0]);
-                    } else {
-                        grade = null;
-                    }
-
-                    return {
-                        name,
-                        dueDate,
-                        gradeCategory,
-                        grade,
-                    };
+                    room,
                 });
             });
 
-            // classes[i].assignments = tableRows;
-            // console.log(tableRows);
+            return classes;
 
-            assignmentsData.push(tableRows);
+        });
 
-            await page.click("button#nextButton");
-            await delay(1000);
-        }
+        browser.close();
 
-        const fullClassData = classes.map((classData, index) => {
-            return {
-                ...classData,
-                assignments: assignmentsData[index],
-            };
-        })
+        cookies().set("classData", JSON.stringify(classes));
+
+        const endTimeClasses = new Date();
+        const elapsedTimeClasses = endTimeClasses.getTime() - startTimeClasses.getTime();
+        console.log("scraped class data in", elapsedTimeClasses, "ms");
+
+        // scrape assignment data
+
+        // const startTimeAssignments = new Date();
+
+        // await page.goto(
+        //     "https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd"
+        // );
+
+        // var assignmentsData: Assignment[][] = [];
+
+        // for (let i = 0; i < classes.length; i++) {
+
+        //     const tableRows = await page.evaluate(() => {
+        //         if (document.querySelector("table > tbody > tr.listCell > td > div.listNoRecordsText")) {
+        //             console.log("No records found");
+        //             return [];
+        //         }
+
+        //         const rows = document.querySelectorAll(
+        //             "table > tbody > tr.listCell"
+        //         )
+
+        //         return Array.from(rows).map((row) => {
+        //             const name = row
+        //                 .querySelector("td:nth-child(3)")
+        //                 ?.textContent?.replace(/\n/g, "") || "";
+        //             const dueDate = row
+        //                 .querySelector("td:nth-child(5)")
+        //                 ?.textContent?.replace(/\n/g, "") || "";
+        //             const gradeCategory = row
+        //                 .querySelector("td:nth-child(2)")
+        //                 ?.textContent?.replace(/\n/g, "") || "";
+        //             const gradeString = row
+        //                 .querySelector("td:nth-child(6) > table > tbody > tr > td > div > span")
+        //                 ?.textContent?.replace(/\n/g, "");
+
+        //             var grade: number | null;
+
+        //             const gradeRegex = /([0-9]*\.?[0-9]*)/g;
+        //             const matches = gradeString?.match(gradeRegex);
+        //             if (matches && !isNaN(parseFloat(matches[0]))) {
+        //                 grade = parseFloat(matches[0]);
+        //             } else {
+        //                 grade = null;
+        //             }
+
+        //             return {
+        //                 name,
+        //                 dueDate,
+        //                 gradeCategory,
+        //                 grade,
+        //             };
+        //         });
+        //     });
+
+        //     // classes[i].assignments = tableRows;
+        //     // console.log(tableRows);
+
+        //     assignmentsData.push(tableRows);
+
+        //     await page.click("button#nextButton");
+        //     await delay(750);
+        // }
+
+        // const fullClassData = classes.map((classData, index) => {
+        //     return {
+        //         ...classData,
+        //         assignments: assignmentsData[index],
+        //     };
+        // })
+
+        // const endTimeAssignments = new Date();
+        // const elapsedTimeAssignments = endTimeAssignments.getTime() - startTimeAssignments.getTime();
+        // console.log("scraped assignment data in", elapsedTimeAssignments, "ms");
 
         // scrape schedule data
 
-        const currentDate = new Date();
-        const formattedDate =
-            currentDate.getMonth() +
-            1 +
-            "/" +
-            currentDate.getDate() +
-            "/" +
-            currentDate.getFullYear();
+        // const startTimeSchedule = new Date();
 
-        await page.goto(
-            "https://aspen.cpsd.us/aspen/studentScheduleContextList.do?navkey=myInfo.sch.list"
-        );
+        // await page.goto(
+        //     "https://aspen.cpsd.us/aspen/studentScheduleContextList.do?navkey=myInfo.sch.list"
+        // );
+        // await delay(250);
 
-        await delay(250);
+        // const currentSchedule = await page.evaluate(() => {
+        //     const tableRows = document.querySelectorAll(
+        //         "table > tbody > tr > td > table > tbody > tr:not(.listHeader)"
+        //     );
 
-        const source = await page.content();
+        //     console.log(tableRows);
+        // });
 
-        const currentSchedule = await page.evaluate(() => {
-            const scheduleRows = Array.from(
-                document.querySelectorAll(
-                    "table > tbody > tr > td > table > tbody > tr:not(.listHeader)"
-                )
-            );
-            const scheduleDetails = scheduleRows.map((row) => {
-                const period = row.querySelector("td:first-child th")?.textContent?.match(/\d+/)?.[0];
-                const scheduleDetailCell = row.querySelector(
-                    "td:nth-child(2) td"
-                );
-                /*
-                    return {
-                        className,
-                        teacherName,
-                        room,
-                        period,
-                    };
-                */
-            });
-            return scheduleDetails.filter((detail) => detail);
-        });
+        // await browser.close();
 
-        /* 
-                    My way of doing it jsut for reference, I don't think it succesfully scraped off page.
-          await page.goto(
-        `https://aspen.cpsd.us/aspen/studentScheduleMatrix.do?navkey=myInfo.sch.matrix&termOid=&schoolOid=&k8Mode=&viewDate=${dateString}&userEvent=0`,
-        { waitUntil: "networkidle2" }
-    );
+        // const endTimeSchedule = new Date();
+        // const elapsedTimeSchedule = endTimeSchedule.getTime() - startTimeSchedule.getTime();
+        // console.log("scraped schedule data in", elapsedTimeSchedule, "ms");
 
-    // scrape schedule data
-    const schedule = await page.evaluate(() => {
-      const scheduleRows = document.querySelectorAll("tr");
-      return Array.from(scheduleRows).map((row) => {
-        const detailsElement = row.querySelector("td[style='width: 125px']");
-        const details = detailsElement ? detailsElement.innerHTML.split('<br>') : null;
-        const time = row.querySelector("td[align='center']")?.textContent?.trim();
-
-        if (details) {
-          return {
-            classCode: details[0],
-            className: details[1],
-            teacherName: details[2],
-            room: details[3],
-            time,
-          };
-        }
-      }).filter(Boolean); // filter out undefined items
-    });
-
-    await browser.close();
-
-    console.log(classes);
-    console.log(schedule);
-
-    // send class and schedule data to client
-    */    
-
-        await browser.close();
-
-        // set class data in cookies 
-
-        cookies().set({
-            name: 'classData',
-            value: JSON.stringify(classes, null, 2),
-            httpOnly: true,
-            path: '/',
-        });
-
-        // doesn't work, assignments sizes are too large to be stored in cookies
-        //
-        // const studentData: Student = {
-        //     name: "Test Student",
-        //     grade: 9,
-        //     classes: classes.filter(classData => classData.classCookieName !== undefined).map((classData) => classData.className) || null,
-        // };
-        //
-        // console.log(studentData);
-        //
-        // for (let i = 0; i < fullClassData.length; i++) {
-        //     const classCookieName = fullClassData[i].classCookieName;
-        //     if (classCookieName) {
-        //         cookies().set(classCookieName, JSON.stringify(fullClassData[i], null, 2));
-        //     }
-        // }
-
-        // console.log(currentSchedule);
+        // const elapsedTimeTotal = endTimeSchedule.getTime() - startTimeLogin.getTime();
+        // console.log("total time elapsed:", elapsedTimeTotal, "ms");
 
         // send class data to client
         if (classes.length <= 0) {
@@ -295,7 +211,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             return NextResponse.redirect("/", 302); // redirect back to login page,
         } else {
             console.log("IT WORKA?!");
-            return NextResponse.json({ text: fullClassData }, { status: 200 });
+            return NextResponse.json({ text: classes }, { status: 200 });
         }
     } catch (error) {
         console.error("Error during scraping:", error);
