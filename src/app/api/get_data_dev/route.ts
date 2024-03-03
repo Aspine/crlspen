@@ -41,6 +41,21 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         await delay(250);
 
+        const browserCookies = await page.cookies();
+
+        console.log(await page.cookies());
+
+        const requestHeaders: HeadersInit = new Headers();
+        requestHeaders.set('Content-Type', 'application/json');
+        requestHeaders.set('Cookie', browserCookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; '));
+
+        const classesTest = await fetch("https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list", {
+            method: "GET",
+            headers: requestHeaders,
+        }).then((res) => res.text());
+
+        console.log(JSON.stringify(classesTest, null, 2));
+
         await page.goto(
             "https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list"
         );
@@ -94,7 +109,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
             });
         });
 
-        console.log(classes);
+        // console.log(classes);
+
+        // scrape assignment data
 
         await page.goto(
             "https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd"
@@ -103,7 +120,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         var assignmentsData: Assignment[][] = [];
 
         for (let i = 0; i < classes.length; i++) {
-            console.log("Scraping assignments for", classes[i].className);
+            // console.log("Scraping assignments for", classes[i].className);
 
             const tableRows = await page.evaluate(() => {
                 if (document.querySelector("table > tbody > tr.listCell > td > div.listNoRecordsText")) {
@@ -149,7 +166,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             });
 
             // classes[i].assignments = tableRows;
-            console.log(tableRows);
+            // console.log(tableRows);
 
             assignmentsData.push(tableRows);
 
@@ -242,6 +259,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
     */    
 
         await browser.close();
+
+        // set class data in cookies 
 
         cookies().set({
             name: 'classData',

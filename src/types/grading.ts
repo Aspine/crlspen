@@ -12,11 +12,10 @@ export interface GradePair {
 export type GPAType = 'fWeighted' | 'fUnweighted' | 'hUnweighted';
 
 export interface ClassData {
-    teacherName: string;
-    className: string;
-    classCookieName: string;
+    name: string;
+    teacher: string;
     grade: number | null;
-    room: string;
+    room: number;
 }
 
 export interface ClassDataWithAssignments extends ClassData {

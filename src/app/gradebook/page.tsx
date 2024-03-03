@@ -12,7 +12,7 @@ export default function Home() {
     return {
       grade: data.grade,
       credits: 10,
-      ap: data.className.startsWith("AP")
+      ap: data.name.startsWith("AP")
     };
   });
 
@@ -49,8 +49,8 @@ export default function Home() {
             </tr>
             {classData.map((data, index) => (
               <tr key={index}>
-                <td>{data.teacherName}</td>
-                <td>{data.className}</td>
+                <td>{data.teacher}</td>
+                <td>{data.name}</td>
                 <td className={data.grade === 100 ? "hGrade" : ""}>{data.grade !== null ? data.grade.toFixed(2) : "-"}</td>
                 <td>{data.room}</td>
               </tr>
