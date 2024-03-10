@@ -87,7 +87,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 const name = $(row).find("td:nth-child(6)").text().replace(/\n/g, "");
                 const teacherRaw = $(row).find("td:nth-child(4)").text().replace(/\n/g, "");
                 const gradeRaw = $(row).find("td:nth-child(8)").text().replace(/\n/g, "");
-                const roomRaw = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
+                const room = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
 
                 const teacher = teacherRaw?.split(";").map((name) => {
                     const [lastName, firstName] = name.trim().split(",").map((name) => name.trim());
@@ -95,8 +95,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 }).join(", ");
 
                 const grade = getGradeFromString(gradeRaw);
-
-                const room = parseInt(roomRaw);
 
                 classes.push({
                     name,
@@ -135,8 +133,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
             return response.text();
         })
         .then(data => {
-            fs.writeFileSync('data.html', data);
-
             const $ = cheerio.load(data);
 
             const classes: any[] = [];
@@ -147,7 +143,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 const name = $(row).find("td:nth-child(6)").text().replace(/\n/g, "");
                 const teacherRaw = $(row).find("td:nth-child(4)").text().replace(/\n/g, "");
                 const gradeRaw = $(row).find("td:nth-child(8)").text().replace(/\n/g, "");
-                const roomRaw = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
+                const room = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
 
                 const teacher = teacherRaw?.split(";").map((name) => {
                     const [lastName, firstName] = name.trim().split(",").map((name) => name.trim());
@@ -155,8 +151,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 }).join(", ");
 
                 const grade = getGradeFromString(gradeRaw);
-
-                const room = parseInt(roomRaw);
 
                 classes.push({
                     name,
