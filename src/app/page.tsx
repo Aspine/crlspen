@@ -18,8 +18,8 @@ export default function Home() {
     setLoading(true);
 
     // different fetch url for dev and prod
-    const response = await fetch("/api/get_data", { // prod
-    // const response = await fetch("/api/get_data_dev/", { // dev
+    // const response = await fetch("/api/get_data", { // prod
+    const response = await fetch("/api/get_data_dev_test/", { // dev
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,6 +29,7 @@ export default function Home() {
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       window.location.href = "/gradebook";
     } else {
       console.log("Login failed");

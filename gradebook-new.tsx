@@ -1,9 +1,9 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { cookies } from "next/headers";
 import NavBar from "@/components/navBar";
 import calculateGpa from "@/utils/getGpa";
+import { ClassWithAssignments } from "@/types";
+import cheerio from "cheerio";
 import { Class } from "@/types";
 import getClassData from "@/utils/getClassData";
 
@@ -12,26 +12,19 @@ export default function Home() {
   const [fWeightedGpa, setFWeightedGpa] = useState(0);
   const [fUnweightedGpa, setFUnweightedGpa] = useState(0);
   const [hUnweightedGpa, setHUnweightedGpa] = useState(0);
-  const [sessionId, setSessionId] = useState("");
 
   useEffect(() => {
-    const sessionIdHook = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("JSESSIONID"))
-      ?.split("=")[1];
-    setSessionId(sessionIdHook || "");
+    const sessionId = cookies().get("JSESSIONID")?.value;
+
+    if (sessionId) {
+      getClassData(sessionId, "").then((data) => {
+        setClassData(data);
+        setFWeightedGpa(calculateGpa(data, "fWeighted"));
+        setFUnweightedGpa(calculateGpa(data, "fUnweighted"));
+        setHUnweightedGpa(calculateGpa(data, "hUnweighted"));
+      });
+    }
   });
-
-  console.log(sessionId);
-
-  if (sessionId) {
-    getClassData(sessionId, "").then((data) => {
-      setClassData(data);
-      setFWeightedGpa(calculateGpa(data, "fWeighted"));
-      setFUnweightedGpa(calculateGpa(data, "fUnweighted"));
-      setHUnweightedGpa(calculateGpa(data, "hUnweighted"));
-    });
-  }
 
   return (
     <main>
@@ -51,7 +44,7 @@ export default function Home() {
         <table className="grades-table">
           <tbody>
             <tr>
-              <th>TEACHER</th>
+              <th>TEACHERS</th>
               <th>CLASS</th>
               <th>GRADE</th>
               <th>RM.</th>
