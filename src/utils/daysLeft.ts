@@ -5,10 +5,9 @@ export default function daysLeft(): number {
     let daysLeft;
 
     for (const day of calendar) {
-        const date = new Date(day.date);
+        const date = new Date(day.date)
         if (date >= today) {
-            daysLeft = 180 - day.count;
-            break;
+            daysLeft = 180 - day.count
         }
     }
 

@@ -10,8 +10,5 @@
             "savePath": "/src/app/css"
         }
     ],
-    "scss.hover.references": false,
-    "[dockercompose]": {
-        "editor.tabSize": 5
-    }
+    "scss.hover.references": false
 }

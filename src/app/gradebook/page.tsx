@@ -1,37 +1,23 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import React from "react";
 import { cookies } from "next/headers";
 import NavBar from "@/components/navBar";
 import calculateGpa from "@/utils/getGpa";
-import { Class } from "@/types";
-import getClassData from "@/utils/getClassData";
+import { ClassWithAssignments } from "@/types";
 
 export default function Home() {
-  const [classData, setClassData] = useState<Class[]>([]);
-  const [fWeightedGpa, setFWeightedGpa] = useState(0);
-  const [fUnweightedGpa, setFUnweightedGpa] = useState(0);
-  const [hUnweightedGpa, setHUnweightedGpa] = useState(0);
-  const [sessionId, setSessionId] = useState("");
+  const classData: ClassWithAssignments[] = JSON.parse(cookies().get("classData")?.value || "[]");
 
-  useEffect(() => {
-    const sessionIdHook = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("JSESSIONID"))
-      ?.split("=")[1];
-    setSessionId(sessionIdHook || "");
+  const gpaInput = classData.map((data) => {
+    return {
+      grade: data.grade,
+      credits: 10,
+      ap: data.name.startsWith("AP")
+    };
   });
 
-  console.log(sessionId);
-
-  if (sessionId) {
-    getClassData(sessionId, "").then((data) => {
-      setClassData(data);
-      setFWeightedGpa(calculateGpa(data, "fWeighted"));
-      setFUnweightedGpa(calculateGpa(data, "fUnweighted"));
-      setHUnweightedGpa(calculateGpa(data, "hUnweighted"));
-    });
-  }
+  const hUnweightedGpa = calculateGpa(gpaInput, "hUnweighted");
+  const fUnweightedGpa = calculateGpa(gpaInput, "fUnweighted");
+  const fWeightedGpa = calculateGpa(gpaInput, "fWeighted");
 
   return (
     <main>
@@ -51,7 +37,7 @@ export default function Home() {
         <table className="grades-table">
           <tbody>
             <tr>
-              <th>TEACHER</th>
+              <th>TEACHERS</th>
               <th>CLASS</th>
               <th>GRADE</th>
               <th>RM.</th>
@@ -60,9 +46,7 @@ export default function Home() {
               <tr key={index}>
                 <td>{data.teacher}</td>
                 <td>{data.name}</td>
-                <td className={data.grade === 100 ? "hGrade" : ""}>
-                  {data.grade !== null ? data.grade.toFixed(2) : "-"}
-                </td>
+                <td className={data.grade === 100 ? "hGrade" : ""}>{data.grade !== null ? data.grade.toFixed(2) : "-"}</td>
                 <td>{data.room}</td>
               </tr>
             ))}
