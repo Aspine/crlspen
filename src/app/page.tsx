@@ -18,8 +18,9 @@ export default function Home() {
     setLoading(true);
 
     // different fetch url for dev and prod
-    const response = await fetch("/api/get_data", { // prod
-    // const response = await fetch("/api/get_data_dev/", { // dev
+    // const response = await fetch("/api/get_data", { // prod
+    const response = await fetch("/api/get_data_dev/", {
+      // dev
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +72,11 @@ export default function Home() {
             <br />
             This is actively being worked on,
             <br />
-            check out the <a href="https://github.com/Aspine/CRLSpen">repository on our github</a>!
+            check out the{" "}
+            <a href="https://github.com/Aspine/CRLSpen">
+              repository on our github
+            </a>
+            !
             <br />
             <br />
           </div>
@@ -85,7 +90,11 @@ export default function Home() {
             required
           />
           </div> */}
-          <button className="loginSubmissionButton" type="submit" onClick={handleLogin}>
+          <button
+            className="loginSubmissionButton"
+            type="submit"
+            onClick={handleLogin}
+          >
             Login
           </button>
         </div>
