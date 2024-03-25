@@ -1,4 +1,3 @@
-import puppeteer from "puppeteer";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -29,49 +28,46 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const startTimeLogin = new Date();
 
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
+    const loginPage = await fetch("https://aspen.cpsd.us/aspen/logon.do");
 
-    // log in to aspen
-    await page.goto("https://aspen.cpsd.us/aspen/logon.do", {
-      waitUntil: "domcontentloaded",
-    });
+    const loginText = await loginPage.text();
+    const $ = cheerio.load(loginText);
+    const apacheInput = $("input");
+    var apacheToken = apacheInput.attr("value");
 
-    var apacheToken;
+    const loginCookies = loginPage.headers.get("set-cookie");
+    const sessionId = loginCookies?.split(";")[0].split("=")[1];
 
-    console.log(apacheToken);
-
-    await page.type("#username", usernameString);
-    await page.type("#password", passwordString);
-    await page.click("#logonButton");
-
-    await delay(250);
-
-    const browserCookies = await page.cookies();
-
-    const jsessionid = browserCookies.find(
-      (cookie) => cookie.name === "JSESSIONID",
-    )?.value;
-
-    const requestHeaders: HeadersInit = new Headers();
-    requestHeaders.set("Content-Type", "application/json");
-    requestHeaders.set(
-      "Cookie",
-      browserCookies
-        .map((cookie) => `${cookie.name}=${cookie.value}`)
-        .join("; "),
-    );
+    console.log("Session ID:", sessionId);
+    console.log("Apache Token:", apacheToken);
 
     const endTimeLogin = new Date();
     const elapsedTimeLogin = endTimeLogin.getTime() - startTimeLogin.getTime();
     console.log("logged in in", elapsedTimeLogin, "ms");
 
-    page.goto(
-      "https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list",
-      {
-        waitUntil: "domcontentloaded",
+    const newLoginPage = await fetch("https://aspen.cpsd.us/aspen/logon.do", {
+      headers: {
+        accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "en-US,en;q=0.9",
+        "cache-control": "max-age=0",
+        "content-type": "application/x-www-form-urlencoded",
+        "sec-ch-ua":
+          '"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"macOS"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+        cookie: "JSESSIONID=" + sessionId,
+        Referer: `https://aspen.cpsd.us/aspen/logon.do;jsessionid=${sessionId}`,
+        "Referrer-Policy": "strict-origin-when-cross-origin",
       },
-    );
+      body: `org.apache.struts.taglib.html.TOKEN=${apacheToken}&userEvent=930&userParam=&operationId=&deploymentId=ma-cambridge&scrollX=0&scrollY=0&formFocusField=username&mobile=false&SSOLoginDone=&username=${usernameString}&password=${passwordString}`,
+      method: "POST",
+    });
 
     // get class data
 
@@ -81,7 +77,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
       "https://aspen.cpsd.us/aspen/portalClassList.do?navkey=academics.classes.list",
       {
         method: "GET",
-        headers: requestHeaders,
+        headers: {
+          cookie: "JSESSIONID=" + sessionId,
+        },
       },
     )
       .then((res) => res.text())
@@ -91,7 +89,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const apacheInput = $("input");
         apacheToken = apacheInput.attr("value");
 
-        console.log(apacheToken);
+        // console.log(apacheToken);
 
         const classes: any[] = [];
 
@@ -135,7 +133,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return classes;
       });
 
-    browser.close();
+    // console.log(classesCurrent);
 
     cookies().set("classData", JSON.stringify(classesCurrent));
 
@@ -144,77 +142,77 @@ export async function POST(req: NextRequest, res: NextResponse) {
       endTimeClasses.getTime() - startTimeClasses.getTime();
     console.log("scraped class data in", elapsedTimeClasses, "ms");
 
-    const classesLast = await fetch(
-      "https://aspen.cpsd.us/aspen/portalClassList.do",
-      {
-        method: "POST",
-        headers: {
-          Accept:
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-          "Accept-Language": "en-US,en;q=0.9",
-          "Content-Type": "application/x-www-form-urlencoded",
-          Cookie: `JSESSIONID=${jsessionid}; deploymentId=ma-cambridge`,
-        },
-        body: `org.apache.struts.taglib.html.TOKEN=${apacheToken}&userEvent=950&userParam=&operationId=&deploymentId=ma-cambridge&scrollX=0&scrollY=0&formFocusField=termFilter&formContents=&formContentsDirty=&maximized=false&menuBarFindInputBox=&selectedStudentOid=STD0000006wB3O&jumpToSearch=&initialSearch=&yearFilter=current&termFilter=GTM0000000C1s9&allowMultipleSelection=true&scrollDirection=&fieldSetName=Default+Fields&fieldSetOid=fsnX2Cls++++++&filterDefinitionId=%23%23%23all&basedOnFilterDefinitionId=&filterDefinitionName=filter.allRecords&sortDefinitionId=default&sortDefinitionName=Schedule+term&editColumn=&editEnabled=false&runningSelection=`,
-      },
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.text();
-      })
-      .then((data) => {
-        const $ = cheerio.load(data);
+    // const classesLast = await fetch(
+    //   "https://aspen.cpsd.us/aspen/portalClassList.do",
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Accept:
+    //         "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    //       "Accept-Language": "en-US,en;q=0.9",
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //       Cookie: `JSESSIONID=${jsessionid}; deploymentId=ma-cambridge`,
+    //     },
+    //     body: `org.apache.struts.taglib.html.TOKEN=${apacheToken}&userEvent=950&userParam=&operationId=&deploymentId=ma-cambridge&scrollX=0&scrollY=0&formFocusField=termFilter&formContents=&formContentsDirty=&maximized=false&menuBarFindInputBox=&selectedStudentOid=STD0000006wB3O&jumpToSearch=&initialSearch=&yearFilter=current&termFilter=GTM0000000C1s9&allowMultipleSelection=true&scrollDirection=&fieldSetName=Default+Fields&fieldSetOid=fsnX2Cls++++++&filterDefinitionId=%23%23%23all&basedOnFilterDefinitionId=&filterDefinitionName=filter.allRecords&sortDefinitionId=default&sortDefinitionName=Schedule+term&editColumn=&editEnabled=false&runningSelection=`,
+    //   },
+    // )
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error("Network response was not ok");
+    //     }
+    //     return response.text();
+    //   })
+    //   .then((data) => {
+    //     const $ = cheerio.load(data);
 
-        const classes: any[] = [];
+    //     const classes: any[] = [];
 
-        const tableRows = $("table > tbody > tr.listCell");
+    //     const tableRows = $("table > tbody > tr.listCell");
 
-        tableRows.each((index, row) => {
-          const name = $(row).find("td:nth-child(6)").text().replace(/\n/g, "");
-          const teacherRaw = $(row)
-            .find("td:nth-child(4)")
-            .text()
-            .replace(/\n/g, "");
-          const gradeRaw = $(row)
-            .find("td:nth-child(8)")
-            .text()
-            .replace(/\n/g, "");
-          const room = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
+    //     tableRows.each((index, row) => {
+    //       const name = $(row).find("td:nth-child(6)").text().replace(/\n/g, "");
+    //       const teacherRaw = $(row)
+    //         .find("td:nth-child(4)")
+    //         .text()
+    //         .replace(/\n/g, "");
+    //       const gradeRaw = $(row)
+    //         .find("td:nth-child(8)")
+    //         .text()
+    //         .replace(/\n/g, "");
+    //       const room = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
 
-          const teacher = teacherRaw
-            ?.split(";")
-            .map((name) => {
-              const [lastName, firstName] = name
-                .trim()
-                .split(",")
-                .map((name) => name.trim());
-              return firstName && lastName
-                ? `${firstName} ${lastName}`
-                : name.trim();
-            })
-            .join(", ");
+    //       const teacher = teacherRaw
+    //         ?.split(";")
+    //         .map((name) => {
+    //           const [lastName, firstName] = name
+    //             .trim()
+    //             .split(",")
+    //             .map((name) => name.trim());
+    //           return firstName && lastName
+    //             ? `${firstName} ${lastName}`
+    //             : name.trim();
+    //         })
+    //         .join(", ");
 
-          const grade = getGradeFromString(gradeRaw);
+    //       const grade = getGradeFromString(gradeRaw);
 
-          classes.push({
-            name,
-            teacher,
-            grade,
-            room,
-          });
-        });
+    //       classes.push({
+    //         name,
+    //         teacher,
+    //         grade,
+    //         room,
+    //       });
+    //     });
 
-        return classes;
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-      });
+    //     return classes;
+    //   })
+    //   .catch((error) => {
+    //     console.error("There was an error!", error);
+    //   });
 
-    console.log(classesLast);
+    // console.log(classesLast);
 
-    cookies().set("classDataLast", JSON.stringify(classesLast));
+    // cookies().set("classDataLast", JSON.stringify(classesLast));
 
     // console.log(assignmentTest);
 
@@ -320,14 +318,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
     // console.log("total time elapsed:", elapsedTimeTotal, "ms");
 
     // send class data to client
-    if (classesCurrent.length <= 0) {
-      // login failed
-      console.log("IT DONDA WORKA?!");
-      return NextResponse.redirect("/", 302); // redirect back to login page,
-    } else {
-      console.log("IT WORKA?!");
-      return NextResponse.json({ text: classesLast }, { status: 200 });
-    }
+    // if (classesCurrent.length <= 0) {
+    //   // login failed
+    //   console.log("IT DONDA WORKA?!");
+    //   return NextResponse.redirect("/", 302); // redirect back to login page,
+    // } else {
+    // console.log("IT WORKA?!");
+    return NextResponse.json({ text: sessionId }, { status: 200 });
+    // }
   } catch (error) {
     console.error("Error during scraping:", error);
     if (res.status) {
