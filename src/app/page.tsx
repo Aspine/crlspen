@@ -5,7 +5,7 @@ import Image from "next/image";
 import falconImage from "@/../public/falcon.png";
 
 export default function Home() {
-  window.location.href = "/login";
-
+  router.push("/login");
+  
   return <div></div>;
 }
