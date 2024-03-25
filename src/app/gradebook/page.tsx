@@ -81,7 +81,7 @@ export default function Home() {
               <tr key={index}>
                 <td>{data.teacher}</td>
                 <td>{data.name}</td>
-                <td className={data.grade === 100 ? "hGrade" : ""}>
+                <td className={data.grade >= 100 ? "hGrade" : ""}>
                   {data.grade !== null ? data.grade.toFixed(2) : "-"}
                 </td>
                 <td>{data.room}</td>
@@ -102,7 +102,7 @@ export default function Home() {
               <tr key={index}>
                 <td>{data.teacher}</td>
                 <td>{data.name}</td>
-                <td className={data.grade === 100 ? "hGrade" : ""}>
+                <td className={data.grade >= 100 ? "hGrade" : ""}>
                   {data.grade !== null ? data.grade.toFixed(2) : "-"}
                 </td>
                 <td>{data.room}</td>
