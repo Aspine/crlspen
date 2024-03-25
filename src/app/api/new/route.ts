@@ -142,77 +142,77 @@ export async function POST(req: NextRequest, res: NextResponse) {
       endTimeClasses.getTime() - startTimeClasses.getTime();
     console.log("scraped class data in", elapsedTimeClasses, "ms");
 
-    // const classesLast = await fetch(
-    //   "https://aspen.cpsd.us/aspen/portalClassList.do",
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       Accept:
-    //         "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-    //       "Accept-Language": "en-US,en;q=0.9",
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //       Cookie: `JSESSIONID=${jsessionid}; deploymentId=ma-cambridge`,
-    //     },
-    //     body: `org.apache.struts.taglib.html.TOKEN=${apacheToken}&userEvent=950&userParam=&operationId=&deploymentId=ma-cambridge&scrollX=0&scrollY=0&formFocusField=termFilter&formContents=&formContentsDirty=&maximized=false&menuBarFindInputBox=&selectedStudentOid=STD0000006wB3O&jumpToSearch=&initialSearch=&yearFilter=current&termFilter=GTM0000000C1s9&allowMultipleSelection=true&scrollDirection=&fieldSetName=Default+Fields&fieldSetOid=fsnX2Cls++++++&filterDefinitionId=%23%23%23all&basedOnFilterDefinitionId=&filterDefinitionName=filter.allRecords&sortDefinitionId=default&sortDefinitionName=Schedule+term&editColumn=&editEnabled=false&runningSelection=`,
-    //   },
-    // )
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Network response was not ok");
-    //     }
-    //     return response.text();
-    //   })
-    //   .then((data) => {
-    //     const $ = cheerio.load(data);
+    const classesLast = await fetch(
+      "https://aspen.cpsd.us/aspen/portalClassList.do",
+      {
+        method: "POST",
+        headers: {
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+          "Accept-Language": "en-US,en;q=0.9",
+          "Content-Type": "application/x-www-form-urlencoded",
+          Cookie: `JSESSIONID=${sessionId}; deploymentId=ma-cambridge`,
+        },
+        body: `org.apache.struts.taglib.html.TOKEN=${apacheToken}&userEvent=950&userParam=&operationId=&deploymentId=ma-cambridge&scrollX=0&scrollY=0&formFocusField=termFilter&formContents=&formContentsDirty=&maximized=false&menuBarFindInputBox=&selectedStudentOid=STD0000006wB3O&jumpToSearch=&initialSearch=&yearFilter=current&termFilter=GTM0000000C1s9&allowMultipleSelection=true&scrollDirection=&fieldSetName=Default+Fields&fieldSetOid=fsnX2Cls++++++&filterDefinitionId=%23%23%23all&basedOnFilterDefinitionId=&filterDefinitionName=filter.allRecords&sortDefinitionId=default&sortDefinitionName=Schedule+term&editColumn=&editEnabled=false&runningSelection=`,
+      },
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.text();
+      })
+      .then((data) => {
+        const $ = cheerio.load(data);
 
-    //     const classes: any[] = [];
+        const classes: any[] = [];
 
-    //     const tableRows = $("table > tbody > tr.listCell");
+        const tableRows = $("table > tbody > tr.listCell");
 
-    //     tableRows.each((index, row) => {
-    //       const name = $(row).find("td:nth-child(6)").text().replace(/\n/g, "");
-    //       const teacherRaw = $(row)
-    //         .find("td:nth-child(4)")
-    //         .text()
-    //         .replace(/\n/g, "");
-    //       const gradeRaw = $(row)
-    //         .find("td:nth-child(8)")
-    //         .text()
-    //         .replace(/\n/g, "");
-    //       const room = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
+        tableRows.each((index, row) => {
+          const name = $(row).find("td:nth-child(6)").text().replace(/\n/g, "");
+          const teacherRaw = $(row)
+            .find("td:nth-child(4)")
+            .text()
+            .replace(/\n/g, "");
+          const gradeRaw = $(row)
+            .find("td:nth-child(8)")
+            .text()
+            .replace(/\n/g, "");
+          const room = $(row).find("td:nth-child(5)").text().replace(/\n/g, "");
 
-    //       const teacher = teacherRaw
-    //         ?.split(";")
-    //         .map((name) => {
-    //           const [lastName, firstName] = name
-    //             .trim()
-    //             .split(",")
-    //             .map((name) => name.trim());
-    //           return firstName && lastName
-    //             ? `${firstName} ${lastName}`
-    //             : name.trim();
-    //         })
-    //         .join(", ");
+          const teacher = teacherRaw
+            ?.split(";")
+            .map((name) => {
+              const [lastName, firstName] = name
+                .trim()
+                .split(",")
+                .map((name) => name.trim());
+              return firstName && lastName
+                ? `${firstName} ${lastName}`
+                : name.trim();
+            })
+            .join(", ");
 
-    //       const grade = getGradeFromString(gradeRaw);
+          const grade = getGradeFromString(gradeRaw);
 
-    //       classes.push({
-    //         name,
-    //         teacher,
-    //         grade,
-    //         room,
-    //       });
-    //     });
+          classes.push({
+            name,
+            teacher,
+            grade,
+            room,
+          });
+        });
 
-    //     return classes;
-    //   })
-    //   .catch((error) => {
-    //     console.error("There was an error!", error);
-    //   });
+        return classes;
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
 
-    // console.log(classesLast);
+    console.log(classesLast);
 
-    // cookies().set("classDataLast", JSON.stringify(classesLast));
+    cookies().set("classDataLast", JSON.stringify(classesLast));
 
     // console.log(assignmentTest);
 
