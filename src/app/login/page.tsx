@@ -66,6 +66,11 @@ export default function Home() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
+            onKeyDown = {(e) => {
+              if (e.key === "Enter"){
+                handleLogin();
+              }
+            }}
           />
           <div className="loginSplash">
             Welcome to the beta of CRLSpen!
