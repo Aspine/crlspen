@@ -1,7 +1,19 @@
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import delay from "@/utils/delay";
+import { Assignment, Class } from "@/types";
 import cheerio from "cheerio";
+
+function getGradeFromString(grade: string): number | null {
+  const gradeRegex = /([0-9]*\.?[0-9]*)/g;
+  const matches = grade.match(gradeRegex);
+  if (matches && !isNaN(parseFloat(matches[0]))) {
+    return parseFloat(matches[0]);
+  } else {
+    return null;
+  }
+}
 
 export async function POST(req: NextRequest, res: NextResponse) {
   // parse username and password from request body
@@ -29,7 +41,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
     console.log("Session ID:", sessionId);
     console.log("Apache Token:", apacheToken);
 
-    cookies().set("sessionId", sessionId ? sessionId : "");
+    if (sessionId) {
+      cookies().set("sessionId", sessionId);
+    }
 
     const endTimeLogin = new Date();
     const elapsedTimeLogin = endTimeLogin.getTime() - startTimeLogin.getTime();
@@ -59,15 +73,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       method: "POST",
     });
 
-    const newLoginText = await newLoginPage.text();
-    const $new = cheerio.load(newLoginText);
-    const apacheInputNew = $new("input");
-    apacheToken = apacheInputNew.attr("value");
-
-    console.log("Apache Token:", apacheToken);
-    cookies().set("apacheToken", apacheToken ? apacheToken : "");
-
-    return NextResponse.json({ text: sessionId }, { status: 200 });
+    return NextResponse.json({ text: "login successful" }, { status: 200 });
   } catch (error) {
     console.error("Error during scraping:", error);
     if (res.status) {

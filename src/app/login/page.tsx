@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import falconImage from "@/../public/falcon.png";
 
@@ -9,23 +9,16 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [agreeTos, setAgreeTos] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const passwordRef = useRef();
+  const [loadingText, setLoadingText] = useState("Setting Up...");
 
   const handleCheckboxChange = () => {
     setAgreeTos(!agreeTos);
   };
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      passwordRef.current.focus();
-    }
-  };
-
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: any) => {
     event.preventDefault(); // prevent the form from refreshing the page
     setLoading(true);
+    setLoadingText("Logging In...");
 
     // different fetch url for dev and prod
     // const response = await fetch("/api/get_data", { // prod
@@ -39,19 +32,32 @@ export default function Home() {
     });
 
     if (response.ok) {
-      const data = await response.json();
-      window.location.href = "/gradebook";
-    } else {
-      console.log("Login failed");
-    }
 
-    setLoading(false);
+      setLoadingText("Fetching Grades...");
+
+      const gradesResponse = await fetch("/api/get_grade_data/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quarter: "Q3" }),
+      });
+
+      if (gradesResponse.ok) {
+        const gradesData = await gradesResponse.json();
+        console.log(gradesData);
+
+        // redirect to the gradebook page
+        window.location.href = "/gradebook";
+      }
+    }
   };
 
   return (
     <main className="loginPage">
       {loading ? (
         <div className="loading-screen">
+          <h1>{loadingText}</h1>
           <Image
             src={falconImage}
             alt="loading"
@@ -68,7 +74,6 @@ export default function Home() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="username"
-            onKeyPress={handleKeyPress}
           />
           <br />
           <input
@@ -77,7 +82,6 @@ export default function Home() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
-            ref={passwordRef}
           />
           <div className="loginSplash">
             Welcome to the beta of CRLSpen!

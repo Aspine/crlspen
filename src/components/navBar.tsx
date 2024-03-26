@@ -7,9 +7,9 @@ export default function NavBar() {
   return (
     <div className="navbar">
       <a href="/dashboard" className="title-link"><h1>CRLSpen</h1></a>
-      <div className="daysLeft">
+      {/* <div className="daysLeft">
         <p>{days} days left</p>
-      </div>
+      </div> */}
       <div className="navlinks">
         <a href="/gradebook">Grades</a>
         <a href="/events">Events</a>

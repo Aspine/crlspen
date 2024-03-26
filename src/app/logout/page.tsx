@@ -3,6 +3,7 @@
 import React from "react";
 import NavBar from "@/components/navBar";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default function Logout() {
     React.useEffect(() => {
