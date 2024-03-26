@@ -17,6 +17,6 @@ open `localhost:3000`
 
 ## Contributors
 
-[Conrad](https://github.com/ckuzmick)
-[Sam](https://github.com/sampriv)
-[Filip](https://github.com/eatingno0dles)
+- [Conrad](https://github.com/ckuzmick)
+- [Sam](https://github.com/sampriv)
+- [Filip](https://github.com/eatingno0dles)
