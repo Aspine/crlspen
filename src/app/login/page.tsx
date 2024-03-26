@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
 import falconImage from "@/../public/falcon.png";
 
@@ -10,11 +10,21 @@ export default function Home() {
   const [agreeTos, setAgreeTos] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const passwordRef = useRef();
+
   const handleCheckboxChange = () => {
     setAgreeTos(!agreeTos);
   };
 
-  const handleLogin = async () => {
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      passwordRef.current.focus();
+    }
+  };
+
+  const handleLogin = async (event) => {
+    event.preventDefault(); // prevent the form from refreshing the page
     setLoading(true);
 
     // different fetch url for dev and prod
@@ -51,13 +61,14 @@ export default function Home() {
           />
         </div>
       ) : (
-        <div className="login-box" onSubmit={handleLogin}>
+        <form className="login-box" onSubmit={handleLogin}>
           <input
             type="text"
             name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="username"
+            onKeyPress={handleKeyPress}
           />
           <br />
           <input
@@ -66,6 +77,7 @@ export default function Home() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
+            ref={passwordRef}
           />
           <div className="loginSplash">
             Welcome to the beta of CRLSpen!
@@ -79,25 +91,14 @@ export default function Home() {
             !
             <br />
             <br />
+            <button
+              className="loginSubmissionButton"
+              type="submit"
+            >
+              Login
+            </button>
           </div>
-          {/* <div className="inline-display-div">
-          <p>I agree to the TOS:</p>
-          <input
-            type="checkbox"
-            name="tosAgree"
-            checked={agreeTos}
-            onChange={handleCheckboxChange}
-            required
-          />
-          </div> */}
-          <button
-            className="loginSubmissionButton"
-            type="submit"
-            onClick={handleLogin}
-          >
-            Login
-          </button>
-        </div>
+        </form>
       )}
     </main>
   );
