@@ -29,7 +29,7 @@ export default function Home() {
 
     // different fetch url for dev and prod
     // const response = await fetch("/api/get_data", { // prod
-    const response = await fetch("/api/new/", {
+    const response = await fetch("/api/login/", {
       // dev
       method: "POST",
       headers: {
