@@ -1,39 +1,13 @@
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { Assignment, Class } from "@/types";
 import cheerio from "cheerio";
+import getRealGrade from "@/utils/getRealGrade";
 
-function getGradeFromString(grade: string): number | null {
-  const gradeRegex = /([0-9]*\.?[0-9]*)/g;
-  const matches = grade.match(gradeRegex);
-  if (matches && !isNaN(parseFloat(matches[0]))) {
-    return parseFloat(matches[0]);
-  } else {
-    return null;
-  }
-}
-
-export async function POST(req: NextRequest, res: NextResponse) {
-  const reqBody = await req.json();
-  const { quarter } = reqBody;
-
-  const quarter_table: { [key: string]: string } = {
-    Q1: "GTM0000000C1s8",
-    Q2: "GTM0000000C1s9",
-    Q3: "GTM0000000C1sA",
-    Q4: "GTM0000000C1sB",
-  };
-
+export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const sessionId = cookies().get("sessionId")?.value;
     var apacheToken = cookies().get("apacheToken")?.value;
-
-    // console.log(quarter, sessionId, apacheToken);
-
-    const termOid = quarter_table[quarter];
-
-    console.log(termOid);
 
     const startTimeClasses = new Date();
 
@@ -83,7 +57,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           })
           .join(", ");
 
-        const grade = getGradeFromString(gradeRaw);
+        const grade = getRealGrade(gradeRaw);
 
         classes.push({
           name,

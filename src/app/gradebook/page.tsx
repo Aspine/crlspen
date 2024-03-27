@@ -41,7 +41,6 @@ export default function Home() {
             <p>Q3 Unweighted: {fUnweightedGpa.toFixed(2)}</p>
           </div>
         </div>
-        <h1>Q3</h1>
         <table className="grades-table">
           <tbody>
             <tr>
