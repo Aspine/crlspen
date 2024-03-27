@@ -3,14 +3,12 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import cheerio from "cheerio";
 
-export default async function POST(req: NextRequest, res: NextResponse) {
-    const reqBody = await req.json();
-
-    const { quarter } = reqBody;
-
+export default async function GET(req: NextRequest, res: NextResponse) {
     try {
         const sessionId = cookies().get("sessionId")?.value;
         var apacheToken = cookies().get("apacheToken")?.value;
+
+        const quarter = 3;
 
         const quarter_table: { [key: string]: string } = {
             Q1: "GTM0000000C1s8",
