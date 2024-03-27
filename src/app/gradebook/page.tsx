@@ -1,16 +1,24 @@
-import React from "react";
+'use client'
+
+import React, { useState, useEffect } from "react";
 import NavBar from "@/components/navBar";
 import calculateGpa from "@/utils/getGpa";
 import { Class } from "@/types";
 import getCredits from "@/utils/getCredits";
-import { cookies } from "next/headers";
-import { getScheduleData } from "@/utils/getScheduleData";
+import LoadingScreen from "@/components/loadingScreen";
 
 export default function Home() {
-  const classData: Class[] = JSON.parse(
-    cookies().get("classDataQ3")?.value || "[]"
-  )
+  const [classData, setClassData] = useState<Class[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setClassData(JSON.parse(
+      decodeURIComponent(document.cookie.split(';').find(cookie => cookie.trim().startsWith("classDataQ3="))?.split('=')[1] || "[]")
+    ));
+
+    setLoading(false);
+  });
+  
   const gpaInput = classData.map((data) => {
     return {
       grade: data.grade,
@@ -23,9 +31,18 @@ export default function Home() {
   const fUnweightedGpa = calculateGpa(gpaInput, "fUnweighted");
   const fWeightedGpa = calculateGpa(gpaInput, "fWeighted");
 
-  getScheduleData();
+  useEffect(() => {
+    async function backgroundScrape() {
+      await fetch("/api/get_schedule_data", {
+        method: "GET",
+      });
+    }
+
+    backgroundScrape();
+  }, ["/api/get_schedule_data/"])
 
   return (
+    loading ? <LoadingScreen loadText="Parsing Grades..." /> :
     <main>
       <NavBar />
       <div className="page-main">
