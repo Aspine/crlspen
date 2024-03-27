@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import cheerio from "cheerio";
 
-export default async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest, res: NextResponse) {
     try {
         const sessionId = cookies().get("sessionId")?.value;
         var apacheToken = cookies().get("apacheToken")?.value;
