@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import cheerio from "cheerio";
 import { Period } from "@/types";
 
-export function getScheduleData() {
+export async function getScheduleData() {
   try {
     const sessionId = cookies().get("sessionId")?.value;
 
@@ -10,7 +10,9 @@ export function getScheduleData() {
 
     var apacheToken;
 
-    const schedule = fetch(
+    var schedule;
+
+    await fetch(
       `https://aspen.cpsd.us/aspen/studentScheduleContextList.do?navkey=myInfo.sch.list`,
       {
         headers: {
@@ -24,7 +26,7 @@ export function getScheduleData() {
       const apacheInput = $("input");
       apacheToken = apacheInput.attr("value");
 
-      const schedule: Period[] = [];
+      const scheduleData: Period[] = [];
 
       const tableRows = $("#contentArea > table:nth-child(2) > tbody > tr:nth-child(1) > td.contentContainer > table:nth-child(2) > tbody > tr:nth-child(6) > td > div > table > tbody > tr > td > table > tbody > tr");
 
@@ -42,25 +44,21 @@ export function getScheduleData() {
             room: classInfo[3],
           };
 
-          schedule.push(period);
+          scheduleData.push(period);
         }
       });
 
-      console.log(schedule)
-
-      return schedule;
+      schedule = scheduleData;
     })
 
-    console.log(schedule);
+    console.log(JSON.stringify(schedule, null, 2));
 
-    cookies().set("apacheToken", apacheToken ? apacheToken : "");
-    cookies().set("scheduleData", JSON.stringify(schedule));
+    // cookies().set("apacheToken", apacheToken ? apacheToken : "");
+    // cookies().set("scheduleData", JSON.stringify(schedule));
 
     const endTime = new Date();
     const elapsedTime = endTime.getTime() - startTime.getTime();
     console.log("scraped schedele in", elapsedTime, "ms");
-
-    cookies().set("classDataQ3", JSON.stringify(schedule));
 
   } catch (error) {
     console.error("Error during scraping:", error);
