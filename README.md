@@ -20,3 +20,4 @@ open `localhost:3000`
 - [Conrad](https://github.com/ckuzmick)
 - [Sam](https://github.com/sampriv)
 - [Filip](https://github.com/eatingno0dles)
+- [Leo](https://github.com/crllect)
