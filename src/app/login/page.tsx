@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import Image from "next/image";
 import falconImage from "@/../public/falcon.png";
+import LoadingScreen from "@/components/loadingScreen";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -11,6 +12,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Setting Up...");
   const pwdRef = React.createRef<HTMLInputElement>();
+  const [sessionId, setSessionId] = useState("");
+  const [apacheToken, setApacheToken] = useState("");
 
   const handleCheckboxChange = () => {
     setAgreeTos(!agreeTos);
@@ -23,6 +26,33 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    // get the session id and apache token
+    const fetchSessionData = async () => {
+      const response = await fetch("/api/login/get_id/", {
+        // no request body needed, only using post to avoid caching
+        method: "POST"
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSessionId(data.sessionId);
+        setApacheToken(data.apacheToken);
+      }
+    };
+    fetchSessionData();
+  }, []);
+
+  console.log(sessionId, apacheToken);
+
+  const handleSubmit = async (event: any) => {
+    if (!password || !username) {
+      alert("Please fill out all fields");
+      return;
+    } else {
+      await handleLogin(event);
+    }
+  }
+
   const handleLogin = async (event: any) => {
     event.preventDefault(); // prevent the form from refreshing the page
     setLoading(true);
@@ -30,13 +60,13 @@ export default function Home() {
 
     // different fetch url for dev and prod
     // const response = await fetch("/api/get_data", { // prod
-    const response = await fetch("/api/login/", {
+    const response = await fetch("/api/login/post_credentials/", {
       // dev
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password, sessionId, apacheToken }),
     });
 
     if (response.ok) {
@@ -52,29 +82,24 @@ export default function Home() {
 
       if (gradesResponse.ok) {
         const gradesData = await gradesResponse.json();
-        console.log(gradesData);
 
         // redirect to the gradebook page
         window.location.href = "/gradebook";
       }
+    } else if (response.status === 400) {
+      await setLoading(false);
+    }
+    else {
+      alert("An error occurred");
     }
   };
 
   return (
     <main className="loginPage">
       {loading ? (
-        <div className="loading-screen">
-          <h1>{loadingText}</h1>
-          <Image
-            src={falconImage}
-            alt="loading"
-            width={100}
-            height={100}
-            className="loading-image"
-          />
-        </div>
+        <LoadingScreen loadText={loadingText} />
       ) : (
-        <form className="login-box" onSubmit={handleLogin}>
+        <form className="login-box" onSubmit={handleSubmit}>
           <input
             type="text"
             name="username"

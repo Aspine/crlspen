@@ -3,43 +3,19 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import cheerio from "cheerio";
 
-function getGradeFromString(grade: string): number | null {
-  const gradeRegex = /([0-9]*\.?[0-9]*)/g;
-  const matches = grade.match(gradeRegex);
-  if (matches && !isNaN(parseFloat(matches[0]))) {
-    return parseFloat(matches[0]);
-  } else {
-    return null;
-  }
-}
-
 export async function POST(req: NextRequest, res: NextResponse) {
   // parse username and password from request body
 
   const reqBody = await req.json();
 
-  const { username, password } = reqBody;
-
+  const { username, password, sessionId, apacheToken } = reqBody;
   const usernameString = String(username);
   const passwordString = String(password);
 
+  console.log("username:", usernameString);
+  console.log("password:", passwordString);
+
   try {
-    const startTimeLogin = new Date();
-
-    const loginPage = await fetch("https://aspen.cpsd.us/aspen/logon.do");
-
-    const loginText = await loginPage.text();
-    const $ = cheerio.load(loginText);
-    const apacheInput = $("input");
-    var apacheToken = apacheInput.attr("value");
-
-    const loginCookies = loginPage.headers.get("set-cookie");
-    const sessionId = loginCookies?.split(";")[0].split("=")[1];
-
-    if (sessionId) {
-      cookies().set("sessionId", sessionId);
-    }
-
     const startTimeNextLogin = new Date();
 
     const newLoginPage = await fetch("https://aspen.cpsd.us/aspen/logon.do", {
@@ -59,18 +35,20 @@ export async function POST(req: NextRequest, res: NextResponse) {
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
         cookie: "JSESSIONID=" + sessionId,
-        Referer: `https://aspen.cpsd.us/aspen/logon.do;jsessionid=${sessionId}`,
+        Referer: `https://aspen.cpsd.us/aspen/logon.do`,
         "Referrer-Policy": "strict-origin-when-cross-origin",
       },
       body: `org.apache.struts.taglib.html.TOKEN=${apacheToken}&userEvent=930&userParam=&operationId=&deploymentId=ma-cambridge&scrollX=0&scrollY=0&formFocusField=username&mobile=false&SSOLoginDone=&username=${usernameString}&password=${passwordString}`,
       method: "POST",
     });
+    const newLoginText = await newLoginPage.text();
+    if (newLoginText.includes("Invalid login.")) {
+      console.log("Invalid login")
+      return NextResponse.json({ error: "Invalid login" }, { status: 400 });
+    }
 
-    const endTimeLogin = new Date();
-    const elapsedTimeLogin = startTimeNextLogin.getTime() - startTimeLogin.getTime();
-    const elapsedTimeNextLogin = endTimeLogin.getTime() - startTimeNextLogin.getTime();
-    console.log("scraped in", elapsedTimeLogin, "ms");
-    console.log("logged in in", elapsedTimeNextLogin, "s");
+    cookies().set("sessionId", sessionId);
+    cookies().set("apacheToken", apacheToken);
 
     return NextResponse.json({ text: "login successful" }, { status: 200 });
   } catch (error) {
