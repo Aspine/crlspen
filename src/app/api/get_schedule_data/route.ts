@@ -33,7 +33,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
       tableRows.each((index, row) => {
         const classInfo = $(row).find("td:nth-child(2) > table > tbody > tr > td").html()?.split("<br>").map((str) => str.trim());
 
-        const timeInfo = $(row).find("td:nth-child(1) > table > tbody > tr:nth-child(2) > td").text().split(" - ").map((str) => str.trim());
+        const timeInfo = $(row).find("td:nth-child(1) > table > tbody > tr:nth-child(2) > td").text().split(" - ");
+
+        const boxColor = $(row).find("td:nth-child(2)").attr("style")?.split(":")[1]?.slice(0, -1);
 
         if (classInfo) {
           const period: Period = {
@@ -42,6 +44,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
             name: classInfo[1],
             teacher: classInfo[2],
             room: classInfo[3],
+            color: boxColor ? boxColor : "",
           };
 
           schedule.push(period);
@@ -57,8 +60,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const endTime = new Date();
     const elapsedTime = endTime.getTime() - startTime.getTime();
     console.log("scraped schedele in", elapsedTime, "ms");
-
-    cookies().set("classDataQ3", JSON.stringify(schedule));
 
     return NextResponse.json({ text: "Scraped Schedule" }, { status: 200 });
   } catch (error) {

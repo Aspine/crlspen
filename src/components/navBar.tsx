@@ -13,7 +13,7 @@ export default function NavBar() {
       <div className="navlinks">
         <a href="/gradebook">Grades</a>
         <a href="/events">Events</a>
-        <a href="/reports">Reports</a>
+        <a href="/schedule">Schedule</a>
         <a href="/logout">Logout</a>
       </div>
     </div>

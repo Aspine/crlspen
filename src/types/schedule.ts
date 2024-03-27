@@ -4,4 +4,5 @@ export interface Period {
     name: string;
     teacher: string;
     room: string;
+    color: string;
 } 
