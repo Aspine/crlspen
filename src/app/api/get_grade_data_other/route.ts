@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
             });
         }
         
-
+        return NextResponse.json({ text: "Scraped Classes" }, { status: 200 })
     } catch (error) {
         console.error(error);
         return NextResponse.error;
