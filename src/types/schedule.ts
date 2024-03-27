@@ -1,6 +1,7 @@
-export interface ScheduleData {
-    time: string;
-    subject: string;
+export interface Period {
+    startTime: string;
+    endTime: string;
+    name: string;
     teacher: string;
     room: string;
 } 

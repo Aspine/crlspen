@@ -1,11 +1,11 @@
 import React from "react";
 import { cookies } from "next/headers";
 import NavBar from "@/components/navBar";
-import { ScheduleData } from "@/types";
+import { Period } from "@/types";
 
 export default function Schedule() {
   const scheduleCookie = cookies().get("scheduleData");
-  const scheduleData: ScheduleData[] = scheduleCookie ? JSON.parse(scheduleCookie.value) : [];
+  const scheduleData: Period[] = scheduleCookie ? JSON.parse(scheduleCookie.value) : [];
 
   console.log(scheduleData);
 
@@ -22,8 +22,8 @@ export default function Schedule() {
           </tr>
           {scheduleData.map((data, index) => (
             <tr key={index}>
-              <td>{data.time}</td>
-              <td>{data.subject}</td>
+              <td>{data.startTime} - {data.endTime}</td>
+              <td>{data.name}</td>
               <td>{data.teacher}</td>
               <td>{data.room}</td>
             </tr>
