@@ -36,16 +36,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const loginCookies = loginPage.headers.get("set-cookie");
     const sessionId = loginCookies?.split(";")[0].split("=")[1];
 
-    console.log("Session ID:", sessionId);
-    console.log("Apache Token:", apacheToken);
-
     if (sessionId) {
       cookies().set("sessionId", sessionId);
     }
 
-    const endTimeLogin = new Date();
-    const elapsedTimeLogin = endTimeLogin.getTime() - startTimeLogin.getTime();
-    console.log("logged in in", elapsedTimeLogin, "ms");
+    const startTimeNextLogin = new Date();
 
     const newLoginPage = await fetch("https://aspen.cpsd.us/aspen/logon.do", {
       headers: {
@@ -70,6 +65,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
       body: `org.apache.struts.taglib.html.TOKEN=${apacheToken}&userEvent=930&userParam=&operationId=&deploymentId=ma-cambridge&scrollX=0&scrollY=0&formFocusField=username&mobile=false&SSOLoginDone=&username=${usernameString}&password=${passwordString}`,
       method: "POST",
     });
+
+    const endTimeLogin = new Date();
+    const elapsedTimeLogin = startTimeNextLogin.getTime() - startTimeLogin.getTime();
+    const elapsedTimeNextLogin = endTimeLogin.getTime() - startTimeNextLogin.getTime();
+    console.log("scraped in", elapsedTimeLogin, "ms");
+    console.log("logged in in", elapsedTimeNextLogin, "s");
 
     return NextResponse.json({ text: "login successful" }, { status: 200 });
   } catch (error) {

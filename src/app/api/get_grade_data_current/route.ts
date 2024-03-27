@@ -19,14 +19,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
         },
       },
     ).then((res) => res.text()).then((html) => {
-      console.log(html)
-
       const $ = cheerio.load(html);
 
       const apacheInput = $("input");
       apacheToken = apacheInput.attr("value");
-
-      // console.log(apacheToken);
 
       const classes: any[] = [];
 

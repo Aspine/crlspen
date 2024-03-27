@@ -4,13 +4,12 @@ import calculateGpa from "@/utils/getGpa";
 import { Class } from "@/types";
 import getCredits from "@/utils/getCredits";
 import { cookies } from "next/headers";
+import { getScheduleData } from "@/utils/getScheduleData";
 
 export default function Home() {
   const classData: Class[] = JSON.parse(
     cookies().get("classDataQ3")?.value || "[]"
   )
-
-  console.log(JSON.stringify(classData))
 
   const gpaInput = classData.map((data) => {
     return {
@@ -24,7 +23,7 @@ export default function Home() {
   const fUnweightedGpa = calculateGpa(gpaInput, "fUnweighted");
   const fWeightedGpa = calculateGpa(gpaInput, "fWeighted");
 
-  if (!classData) return <div>Loading...</div>;
+  getScheduleData();
 
   return (
     <main>

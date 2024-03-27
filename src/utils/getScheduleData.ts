@@ -1,11 +1,8 @@
-import { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import cheerio from "cheerio";
-import getRealGrade from "@/utils/getRealGrade";
 import { Period } from "@/types";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export function getScheduleData() {
   try {
     const sessionId = cookies().get("sessionId")?.value;
 
@@ -13,7 +10,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     var apacheToken;
 
-    const schedule = await fetch(
+    const schedule = fetch(
       `https://aspen.cpsd.us/aspen/studentScheduleContextList.do?navkey=myInfo.sch.list`,
       {
         headers: {
@@ -21,6 +18,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         },
       },
     ).then((res) => res.text()).then((html) => {
+
       const $ = cheerio.load(html);
 
       const apacheInput = $("input");
@@ -48,8 +46,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
         }
       });
 
+      console.log(schedule)
+
       return schedule;
     })
+
+    console.log(schedule);
 
     cookies().set("apacheToken", apacheToken ? apacheToken : "");
     cookies().set("scheduleData", JSON.stringify(schedule));
@@ -60,21 +62,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     cookies().set("classDataQ3", JSON.stringify(schedule));
 
-    return NextResponse.json({ text: "Scraped Schedule" }, { status: 200 });
   } catch (error) {
     console.error("Error during scraping:", error);
-    if (res.status) {
-      return NextResponse.json(
-        { error: "Internal Server Error" },
-        { status: 500 },
-      );
-    } else {
-      console.error("res object does not have a status function");
-    }
-
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
-    );
   }
 }

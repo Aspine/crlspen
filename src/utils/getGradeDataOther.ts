@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import cheerio from "cheerio";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function getGradeDataOther(quarter: number) {
     try {
         const sessionId = cookies().get("sessionId")?.value;
         var apacheToken = cookies().get("apacheToken")?.value;
@@ -35,11 +35,3 @@ export async function GET(req: NextRequest, res: NextResponse) {
         return NextResponse.error;
     }
 }
-// pass in current quarter 
-// for now, just pass in Q3
-// get sessionId and apacheToken from cookies
-// for loop:
-//   fetch data from aspen using POST method
-//   parse data and save as variable in array of full data
-//   get new apache token and save
-// split into separate arrays and put into cookies
