@@ -4,6 +4,8 @@ import React from "react";
 import NavBar from "@/components/navBar";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import Image from "next/image";
+import falconImage from "@/../public/falcon.png";
 
 export default function Logout() {
     React.useEffect(() => {
@@ -21,7 +23,16 @@ export default function Logout() {
     }, []);
     return (
         <main>
-            <h1>Logging Out...</h1>
+            <div className="loading-screen">
+                <h1>Clearing Cookies...</h1>
+                <Image
+                    src={falconImage}
+                    alt="loading"
+                    width={100}
+                    height={100}
+                    className="loading-image"
+                />
+        </div>
         </main>
     );
 }

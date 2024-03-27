@@ -3,24 +3,13 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest, res: NextResponse) {
-    cookies().set({
-        name: "classDataQ3",
-        value: "",
-        expires: new Date(0),
-    });
+    cookies().delete("sessionId");
+    cookies().delete("apacheToken");
+    cookies().delete("classDataQ1");
+    cookies().delete("classDataQ2");
+    cookies().delete("classDataQ3");
+    cookies().delete("classDataQ4");
 
-    cookies().set({
-        name: "sessionId",
-        value: "",
-        expires: new Date(0),
-    });
-
-    cookies().set({
-        name: "apacheToken",
-        value: "",
-        expires: new Date(0),
-    });
-    
     return NextResponse.json(
         { text: "Logged out." },
         { status: 200 }
