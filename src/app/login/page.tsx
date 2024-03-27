@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, createRef } from "react";
 import Image from "next/image";
 import falconImage from "@/../public/falcon.png";
 
@@ -10,9 +10,17 @@ export default function Home() {
   const [agreeTos, setAgreeTos] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Setting Up...");
+  const pwdRef = React.createRef<HTMLInputElement>();
 
   const handleCheckboxChange = () => {
     setAgreeTos(!agreeTos);
+  };
+
+  const handleKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      pwdRef.current?.focus();
+    }
   };
 
   const handleLogin = async (event: any) => {
@@ -73,6 +81,7 @@ export default function Home() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="username"
+            onKeyPress={handleKeyPress}
           />
           <br />
           <input
@@ -81,6 +90,7 @@ export default function Home() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
+            ref={pwdRef}
           />
           <div className="loginSplash">
             Welcome to the beta of CRLSpen!

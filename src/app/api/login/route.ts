@@ -1,8 +1,6 @@
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import delay from "@/utils/delay";
-import { Assignment, Class } from "@/types";
 import cheerio from "cheerio";
 
 function getGradeFromString(grade: string): number | null {
