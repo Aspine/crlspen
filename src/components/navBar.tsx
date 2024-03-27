@@ -6,7 +6,7 @@ export default function NavBar() {
 
   return (
     <div className="navbar">
-      <a href="/dashboard" className="title-link"><h1>CRLSpen</h1></a>
+      <a href="/gradebook" className="title-link"><h1>CRLSpen</h1></a>
       {/* <div className="daysLeft">
         <p>{days} days left</p>
       </div> */}

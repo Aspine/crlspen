@@ -35,12 +35,11 @@ export default function Home() {
 
       setLoadingText("Fetching Grades...");
 
-      const gradesResponse = await fetch("/api/get_grade_data/", {
-        method: "POST",
+      const gradesResponse = await fetch("/api/get_grade_data_current/", {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ quarter: "Q3" }),
+        }
       });
 
       if (gradesResponse.ok) {

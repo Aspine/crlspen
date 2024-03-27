@@ -297,6 +297,7 @@ a:hover {
   height: 100%;
   background-color: var(--background-color);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 100;
@@ -304,6 +305,7 @@ a:hover {
 
 .loading-image {
   animation: spin 2s linear infinite;
+  margin-top: 40px;
 }
 
 @keyframes spin {
