@@ -17,7 +17,7 @@ export default function Home() {
   const [invalidLogin, setInvalidLogin] = useState(false);
 
   const handleCheckboxChange = (e: any) => {
-    setChecked(e.target.checked)
+    setAgreeTos(e.target.checked)
   };
 
   const handleKeyPress = (event: any) => {
