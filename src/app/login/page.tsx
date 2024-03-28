@@ -50,7 +50,7 @@ export default function Home() {
   function handleSubmit() {
     if (!password || !username) {
       setInvalidLogin(true);
-      setErrorText("Incorrect username or password.")
+      setErrorText("Please fill out all fields.")
     } else if (!agreeTos) {
       setInvalidLogin(true);
       setErrorText("Agree to the TOS.");
@@ -97,6 +97,7 @@ export default function Home() {
     } else if (response.status === 400) {
       await setLoading(false);
       await setInvalidLogin(true);
+      await setErrorText("Incorrect username or password.")
     }
     else {
       alert("An error occurred");
