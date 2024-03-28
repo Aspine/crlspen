@@ -47,7 +47,7 @@ export default function Home() {
   console.log(sessionId, apacheToken);
 
   function handleSubmit() {
-    if (!password || !username) {
+    if (!password || !username || !agreeTos) {
       setInvalidLogin(true);
     } else {
       handleLogin(event);
