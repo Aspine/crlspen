@@ -108,7 +108,7 @@ export default function Home() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="username"
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
           />
           <br />
           <input
@@ -118,6 +118,11 @@ export default function Home() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
             ref={pwdRef}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                  handleLogin(event);
+              }
+            }}
           />
           {invalidLogin ? (
             <div className="loginErrorTxt">
