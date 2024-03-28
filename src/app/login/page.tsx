@@ -137,7 +137,7 @@ export default function Home() {
               {errorText}
             </div>
           ) : (null)}
-          <div>
+          <div className="checkbox-container">
             <input
               value="tosAgree"
               type="checkbox"
