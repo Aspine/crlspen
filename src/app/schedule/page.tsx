@@ -18,7 +18,10 @@ export default function Schedule() {
                 backgroundColor: data.color ? data.color : "white",
                 color: "black",
               }}>
-                <td>{data.startTime} - {data.endTime}</td>
+                <td>
+                  <p>{data.startTime}</p>
+                  <p>{data.endTime}</p>
+                </td>
                 <td>
                   {data.name}
                   <br />

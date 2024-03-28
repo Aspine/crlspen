@@ -326,3 +326,23 @@ a:hover {
 .schedule-table tr {
   height: 40px;
 }
+
+.schedule-table tr td {
+  text-align: center;
+  padding: 10px;
+}
+
+.schedule-table tr td:nth-child(1) {
+  width: 20%;
+  min-width: 150px;
+}
+
+.schedule-table tr td:nth-child(1) p {
+  margin: 0;
+  padding: 0;
+}
+
+.schedule-table tr td:nth-child(1) p:nth-child(1) {
+  font-weight: 700;
+  font-size: larger;
+}
