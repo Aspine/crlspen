@@ -15,6 +15,7 @@ export default function Home() {
   const [sessionId, setSessionId] = useState("");
   const [apacheToken, setApacheToken] = useState("");
   const [invalidLogin, setInvalidLogin] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const handleCheckboxChange = (e: any) => {
     setAgreeTos(e.target.checked)
@@ -47,9 +48,15 @@ export default function Home() {
   console.log(sessionId, apacheToken);
 
   function handleSubmit() {
-    if (!password || !username || !agreeTos) {
+    if (!password || !username) {
       setInvalidLogin(true);
-    } else {
+      setErrorText("Incorrect username or password.")
+    } else if (!agreeTos) {
+      setInvalidLogin(true);
+      setErrorText("Agree to the TOS.");
+    } 
+    
+    else {
       handleLogin(event);
     }
   }
@@ -126,7 +133,7 @@ export default function Home() {
           />
           {invalidLogin ? (
             <div className="loginErrorTxt">
-              Incorrect username or password
+              {errorText}
             </div>
           ) : (null)}
           <div>
@@ -135,6 +142,9 @@ export default function Home() {
               type="checkbox"
               onChange={handleCheckboxChange}
             />
+            <label for="tosAgree">
+              I agree to the TOS.
+            </label>
           </div>
           <div className="loginSplash">
             Welcome to the beta of CRLSpen!
