@@ -88,6 +88,13 @@ body {
   outline: none;
 }
 
+.loginErrorTxt {
+  text-align: center;
+  position: relative;
+  bottom: 12px;
+  color:rgb(250, 38, 38);
+}
+
 .loginSplash {
   text-align: center;
   text-decoration: none;

@@ -14,6 +14,7 @@ export default function Home() {
   const pwdRef = React.createRef<HTMLInputElement>();
   const [sessionId, setSessionId] = useState("");
   const [apacheToken, setApacheToken] = useState("");
+  const [invalidLogin, setInvalidLogin] = useState(false);
 
   const handleCheckboxChange = () => {
     setAgreeTos(!agreeTos);
@@ -88,6 +89,7 @@ export default function Home() {
       }
     } else if (response.status === 400) {
       await setLoading(false);
+      await setInvalidLogin(true);
     }
     else {
       alert("An error occurred");
@@ -117,6 +119,11 @@ export default function Home() {
             placeholder="password"
             ref={pwdRef}
           />
+          {invalidLogin ? (
+            <div className="loginErrorTxt">
+              Your username or password was invalid!
+            </div>
+          ) : (<div></div>)}
           <div className="loginSplash">
             Welcome to the beta of CRLSpen!
             <br />
