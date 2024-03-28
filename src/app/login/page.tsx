@@ -126,7 +126,7 @@ export default function Home() {
           />
           {invalidLogin ? (
             <div className="loginErrorTxt">
-              Your username or password was invalid!
+              Incorrect username or password
             </div>
           ) : (<div></div>)}
           <div className="loginSplash">
