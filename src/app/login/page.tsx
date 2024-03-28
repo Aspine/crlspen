@@ -16,8 +16,8 @@ export default function Home() {
   const [apacheToken, setApacheToken] = useState("");
   const [invalidLogin, setInvalidLogin] = useState(false);
 
-  const handleCheckboxChange = () => {
-    setAgreeTos(!agreeTos);
+  const handleCheckboxChange = (e: any) => {
+    setChecked(e.target.checked)
   };
 
   const handleKeyPress = (event: any) => {
@@ -128,7 +128,14 @@ export default function Home() {
             <div className="loginErrorTxt">
               Incorrect username or password
             </div>
-          ) : (<div></div>)}
+          ) : (null)}
+          <div>
+            <input
+              value="tosAgree"
+              type="checkbox"
+              onChange={handleCheckboxChange}
+            />
+          </div>
           <div className="loginSplash">
             Welcome to the beta of CRLSpen!
             <br />
