@@ -120,7 +120,7 @@ export default function Home() {
             ref={pwdRef}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                  handleLogin(event);
+                  handleSubmit();
               }
             }}
           />
