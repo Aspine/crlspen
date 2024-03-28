@@ -17,7 +17,7 @@ export default function Home() {
     ));
 
     setLoading(false);
-  });
+  }, [setClassData]);
   
   const gpaInput = classData.map((data) => {
     return {

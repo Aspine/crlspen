@@ -40,6 +40,7 @@ export default function Home() {
         setApacheToken(data.apacheToken);
       }
     };
+    
     fetchSessionData();
   }, []);
 

@@ -12,6 +12,7 @@ export default function LoadingScreen({ loadText }: { loadText: string }) {
                     width={100}
                     height={100}
                     className="loading-image"
+                    priority
                 />
             </div>
         </main>
