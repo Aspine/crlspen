@@ -46,12 +46,11 @@ export default function Home() {
 
   console.log(sessionId, apacheToken);
 
-  const handleSubmit = async (event: any) => {
+  function handleSubmit() {
     if (!password || !username) {
-      alert("Please fill out all fields");
-      return;
+      setInvalidLogin(true);
     } else {
-      await handleLogin(event);
+      handleLogin(event);
     }
   }
 
@@ -102,7 +101,7 @@ export default function Home() {
       {loading ? (
         <LoadingScreen loadText={loadingText} />
       ) : (
-        <form className="login-box" onSubmit={handleSubmit}>
+        <div className="login-box" onSubmit={handleSubmit}>
           <input
             type="text"
             name="username"
@@ -140,11 +139,12 @@ export default function Home() {
             <button
               className="loginSubmissionButton"
               type="submit"
+              onClick={handleSubmit}
             >
               Login
             </button>
           </div>
-        </form>
+        </div>
       )}
     </main>
   );
