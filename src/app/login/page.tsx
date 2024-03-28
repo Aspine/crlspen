@@ -142,7 +142,7 @@ export default function Home() {
               type="checkbox"
               onChange={handleCheckboxChange}
             />
-            <label for="tosAgree">
+            <label>
               I agree to the TOS.
             </label>
           </div>
