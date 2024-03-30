@@ -6,8 +6,21 @@ import { Period } from "@/types";
 export default function Schedule() {
   const scheduleCookie = cookies().get("scheduleData");
   const scheduleData: Period[] = scheduleCookie ? JSON.parse(scheduleCookie.value) : [];
-
-  return (
+  
+  if (schedualeData.length == 0) {
+    return (
+      <main>
+      <NavBar />
+      <div className="page-main">
+        <h1 className="schedule-error">
+          School is not in session today.
+        </h1>
+      </div>
+    </main>
+    );
+  }
+  else {
+    return (
     <main>
       <NavBar />
       <div className="page-main">
@@ -36,4 +49,5 @@ export default function Schedule() {
       </div>
     </main>
   );
+}
 }

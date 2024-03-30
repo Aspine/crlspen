@@ -323,6 +323,10 @@ a {
     transform: rotate(360deg);
   }
 }
+.schedule-error {
+  text-align: center;
+  font-size: 45px;
+}
 
 .schedule-table {
   width: 100%;

@@ -53,10 +53,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
       return schedule;
     })
-
+    
     cookies().set("apacheToken", apacheToken ? apacheToken : "");
     cookies().set("scheduleData", JSON.stringify(schedule));
-
+    
     const endTime = new Date();
     const elapsedTime = endTime.getTime() - startTime.getTime();
     console.log("scraped schedele in", elapsedTime, "ms");
