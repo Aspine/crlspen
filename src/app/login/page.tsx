@@ -54,9 +54,7 @@ export default function Home() {
     } else if (!agreeTos) {
       setInvalidLogin(true);
       setErrorText("Agree to the TOS.");
-    } 
-    
-    else {
+    } else {
       handleLogin(event);
     }
   }

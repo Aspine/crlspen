@@ -5,6 +5,16 @@ import cheerio from "cheerio";
 import getRealGrade from "@/utils/getRealGrade";
 import { Period } from "@/types";
 
+function getScheduleWithLunch(schedule: Period[]) {
+  const length = schedule.length;
+  var lunchPeriod;
+  const lunchBlock = schedule[schedule.length - 1];
+
+  if (lunchBlock.room) {
+    
+  }
+}
+
 export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const sessionId = cookies().get("sessionId")?.value;
@@ -52,10 +62,13 @@ export async function GET(req: NextRequest, res: NextResponse) {
       });
 
       return schedule;
-    })
+    });
 
     cookies().set("apacheToken", apacheToken ? apacheToken : "");
-    cookies().set("scheduleData", JSON.stringify(schedule));
+    cookies().set(
+      "scheduleData",
+      JSON.stringify(schedule),
+    );
 
     const endTime = new Date();
     const elapsedTime = endTime.getTime() - startTime.getTime();

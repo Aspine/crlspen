@@ -36,6 +36,10 @@ export default function Home() {
       await fetch("/api/get_schedule_data", {
         method: "GET",
       });
+
+      await fetch("/api/get_assignments_current", {
+        method: "GET",
+      });
     }
 
     backgroundScrape();

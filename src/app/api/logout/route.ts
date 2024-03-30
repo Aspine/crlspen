@@ -9,6 +9,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     cookies().delete("classDataQ2");
     cookies().delete("classDataQ3");
     cookies().delete("classDataQ4");
+    cookies().delete("scheduleData");
 
     return NextResponse.json(
         { text: "Logged out." },

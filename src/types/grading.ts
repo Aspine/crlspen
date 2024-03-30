@@ -24,7 +24,9 @@ export interface ClassWithAssignments extends Class {
 
 export interface Assignment {
     name: string;
-    dueDate: string;
-    gradeCategory: string;
-    grade: number | null;
+    dueDate: string | null;
+    gradeCategory: string | null;
+    points: number | null;
+    earned: number | null;
+    feedback: string | null;
 }
