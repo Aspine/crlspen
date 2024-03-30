@@ -7,7 +7,7 @@ export default function Schedule() {
   const scheduleCookie = cookies().get("scheduleData");
   const scheduleData: Period[] = scheduleCookie ? JSON.parse(scheduleCookie.value) : [];
   
-  if (schedualeData.length == 0) {
+  if (scheduleData.length == 0) {
     return (
       <main>
       <NavBar />
