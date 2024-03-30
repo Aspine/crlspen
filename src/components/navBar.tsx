@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function NavBar() {
-  const days = daysLeft();
 
   return (
     <div className="navbar">
