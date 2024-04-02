@@ -9,19 +9,48 @@ export async function GET(req: NextRequest, res: NextResponse) {
         const startTime = new Date();
 
         const sessionId = cookies().get("sessionId")?.value;
-        const apacheToken = cookies().get("apacheToken")?.value;
+        var apacheToken = cookies().get("apacheToken")?.value;
         const classesListUnparsed  = cookies().get("classDataQ3")?.value;
         const classesList = classesListUnparsed ? JSON.parse(classesListUnparsed) : [];
         const classes = classesList.length;
 
         console.log(classes)
 
-        const assignmentsList = await fetch("https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd", {
+        await fetch("https://aspen.cpsd.us/aspen/portalAssignmentList.do", {
             headers: {
                 Cookie: `JSESSIONID=${sessionId}`
-            }
+            },
+            method: "GET",
+            // body: new URLSearchParams({
+            //     "org.apache.struts.taglib.html.TOKEN": apacheToken ? apacheToken : "",
+            //     "userEvent": "view",
+            //     "userParam": "",
+            //     "gradeTermOid": "GTM0000000C1sA",
+            // })
         }).then(res => res.text()).then(html => {
             const $ = cheerio.load(html);
+
+            console.log($.text().trim());
+
+            const apacheInput = $("input");
+            apacheToken = apacheInput.attr("value");
+        });
+
+        const assignmentsList = await fetch("https://aspen.cpsd.us/aspen/portalAssignmentList.do", {
+            headers: {
+                Cookie: `JSESSIONID=${sessionId}`
+            },
+            method: "POST",
+            body: new URLSearchParams({
+                "org.apache.struts.taglib.html.TOKEN": apacheToken ? apacheToken : "",
+                "userEvent": "60",
+                "userParam": "",
+                "gradeTermOid": "GTM0000000C1sA",
+            }),
+        }).then(res => res.text()).then(html => {
+            const $ = cheerio.load(html);
+
+            console.log($.text().trim());
 
             const assignments: Assignment[] = [];
 
