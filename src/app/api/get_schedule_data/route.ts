@@ -10,9 +10,17 @@ function getScheduleWithLunch(schedule: Period[]) {
   var lunchPeriod;
   const lunchBlock = schedule[schedule.length - 1];
 
-  if (lunchBlock.room) {
-    
+  if ((lunchBlock.room[1] === "1" || lunchBlock.room[1] === "2" || lunchBlock.room[1] === "3" || lunchBlock.room[1] === "4") && (lunchBlock.room[0] === "4" || lunchBlock.room[0] === "5")) {
+    lunchPeriod = 3;
+  } else if (lunchBlock.name.includes("Physics")) {
+    lunchPeriod = 3;
+  } else if (lunchBlock.room.startsWith("WM")) {
+    lunchPeriod = 3;
+  } else if (lunchBlock.room[0] === "2" && !lunchBlock.name.includes("Physics")) {
+    lunchPeriod = 1;
   }
+
+  console.log(lunchPeriod);
 }
 
 export async function GET(req: NextRequest, res: NextResponse) {
@@ -55,6 +63,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
             teacher: classInfo[2],
             room: classInfo[3],
             color: boxColor ? boxColor : "",
+            id: classInfo[0],
           };
 
           schedule.push(period);
@@ -66,6 +75,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     cookies().set("apacheToken", apacheToken ? apacheToken : "");
     cookies().set("scheduleData", JSON.stringify(schedule));
+
+    getScheduleWithLunch(schedule);
 
     const endTime = new Date();
     const elapsedTime = endTime.getTime() - startTime.getTime();
