@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "@/components/navBar";
 import calculateGpa from "@/utils/getGpa";
-import { Class } from "@/types";
+import { Assignment, Class } from "@/types";
 import getCredits from "@/utils/getCredits";
 import LoadingScreen from "@/components/loadingScreen";
 
 export default function Home() {
   const [classData, setClassData] = useState<Class[]>([]);
+  const [assignmentData, setAssignmentData] = useState<Assignment[][]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function Home() {
 
     setLoading(false);
   }, [setClassData]);
-  
+
   const gpaInput = classData.map((data) => {
     return {
       grade: data.grade,
@@ -36,6 +37,12 @@ export default function Home() {
       await fetch("/api/get_schedule_data", {
         method: "GET",
       });
+
+      const assignmentDataQ3 = await fetch("/api/get_assignments_current", {
+        method: "GET",
+      }).then(res => res.json());
+
+      setAssignmentData(assignmentDataQ3);
     }
 
     backgroundScrape();
@@ -43,41 +50,41 @@ export default function Home() {
 
   return (
     loading ? <LoadingScreen loadText="Parsing Grades..." /> :
-    <main>
-      <NavBar />
-      <div className="page-main">
-        <div className="gpa-container">
-          <div className="gpa-box hUnweightedGpa">
-            <p>Q3 100 Scale: {hUnweightedGpa.toFixed(2)}</p>
+      <main>
+        <NavBar />
+        <div className="page-main">
+          <div className="gpa-container">
+            <div className="gpa-box hUnweightedGpa">
+              <p>Q3 100 Scale: {hUnweightedGpa.toFixed(2)}</p>
+            </div>
+            <div className="gpa-box fWeightedGpa">
+              <p>Q3 Weighted: {fWeightedGpa.toFixed(2)}</p>
+            </div>
+            <div className="gpa-box fUnweightedGpa">
+              <p>Q3 Unweighted: {fUnweightedGpa.toFixed(2)}</p>
+            </div>
           </div>
-          <div className="gpa-box fWeightedGpa">
-            <p>Q3 Weighted: {fWeightedGpa.toFixed(2)}</p>
-          </div>
-          <div className="gpa-box fUnweightedGpa">
-            <p>Q3 Unweighted: {fUnweightedGpa.toFixed(2)}</p>
-          </div>
-        </div>
-        <table className="grades-table">
-          <tbody>
-            <tr>
-              <th>TEACHERS</th>
-              <th>CLASS</th>
-              <th>GRADE</th>
-              <th>RM.</th>
-            </tr>
-            {classData.map((data, index) => (
-              <tr key={index}>
-                <td>{data.teacher}</td>
-                <td>{data.name}</td>
-                <td className={data.grade !== null ? (data.grade >= 100 ? "hGrade" : "") : ""}>
-                  {data.grade !== null ? data.grade.toFixed(2) : "-"}
-                </td>
-                <td>{data.room}</td>
+          <table className="grades-table">
+            <tbody>
+              <tr>
+                <th>TEACHERS</th>
+                <th>CLASS</th>
+                <th>GRADE</th>
+                <th>RM.</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </main>
+              {classData.map((data, index) => (
+                <tr key={index}>
+                  <td>{data.teacher}</td>
+                  <td>{data.name}</td>
+                  <td className={data.grade !== null ? (data.grade >= 100 ? "hGrade" : "") : ""}>
+                    {data.grade !== null ? data.grade.toFixed(2) : "-"}
+                  </td>
+                  <td>{data.room}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </main>
   );
 }
