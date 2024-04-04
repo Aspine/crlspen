@@ -43,9 +43,7 @@ export default function Home() {
     };
     
     fetchSessionData();
-  }, []);
-
-  console.log(sessionId, apacheToken);
+  }, ["api/login/get_id/"]);
 
   function handleSubmit() {
     if (!password || !username) {
