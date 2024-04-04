@@ -12,11 +12,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const usernameString = String(username);
   const passwordString = String(password);
 
-  console.log("username:", usernameString);
-  console.log("password:", passwordString);
-
   try {
-    const startTimeNextLogin = new Date();
+    const startTime = new Date();
 
     const newLoginPage = await fetch("https://aspen.cpsd.us/aspen/logon.do", {
       headers: {
@@ -49,6 +46,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     cookies().set("sessionId", sessionId);
     cookies().set("apacheToken", apacheToken);
+
+    const endTime = new Date();
+    const time = endTime.getTime() - startTime.getTime();
+    console.log(` ✓ Logged in in`, time, "ms");
 
     return NextResponse.json({ text: "login successful" }, { status: 200 });
   } catch (error) {

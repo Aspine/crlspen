@@ -19,8 +19,6 @@ function getScheduleWithLunch(schedule: Period[]) {
   } else if (lunchBlock.room[0] === "2" && !lunchBlock.name.includes("Physics")) {
     lunchPeriod = 1;
   }
-
-  console.log(lunchPeriod);
 }
 
 export async function GET(req: NextRequest, res: NextResponse) {
@@ -80,7 +78,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     const endTime = new Date();
     const elapsedTime = endTime.getTime() - startTime.getTime();
-    console.log("scraped schedele in", elapsedTime, "ms");
+    console.log(" ✓ scraped schedele in", elapsedTime, "ms");
 
     return NextResponse.json({ text: "Scraped Schedule" }, { status: 200 });
   } catch (error) {

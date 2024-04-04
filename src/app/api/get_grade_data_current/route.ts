@@ -70,8 +70,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     const endTimeClasses = new Date();
     const elapsedTimeClasses =
-    endTimeClasses.getTime() - startTimeClasses.getTime();
-    console.log("scraped class data in", elapsedTimeClasses, "ms");
+      endTimeClasses.getTime() - startTimeClasses.getTime();
+    console.log(" ✓ scraped class data in", elapsedTimeClasses, "ms");
 
     cookies().set("classDataQ3", JSON.stringify(classesList));
 

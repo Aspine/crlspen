@@ -5,6 +5,8 @@ import cheerio from "cheerio";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
+    const startTime = new Date();
+
     const loginPage = await fetch("https://aspen.cpsd.us/aspen/logon.do");
 
     const loginText = await loginPage.text();
@@ -14,6 +16,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     const loginCookies = loginPage.headers.get("set-cookie");
     const sessionId = loginCookies?.split(";")[0].split("=")[1];
+
+    const endTime = new Date();
+    const time = endTime.getTime() - startTime.getTime();
+    console.log(` ✓ Got Session ID and Apache Token in`, time, `ms`);
 
     return NextResponse.json({ sessionId, apacheToken }, { status: 200 })
   } catch (error) {
