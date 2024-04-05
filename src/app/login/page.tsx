@@ -11,11 +11,11 @@ export default function Home() {
   const [agreeTos, setAgreeTos] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Setting Up...");
-  const pwdRef = React.createRef<HTMLInputElement>();
   const [sessionId, setSessionId] = useState("");
   const [apacheToken, setApacheToken] = useState("");
   const [invalidLogin, setInvalidLogin] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const pwdRef = React.createRef<HTMLInputElement>();
 
   const handleCheckboxChange = (e: any) => {
     setAgreeTos(e.target.checked)
