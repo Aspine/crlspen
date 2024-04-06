@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest, res: NextResponse) {
+    const startTime = new Date();
+
     const sessionId = cookies().get("sessionId")?.value;
     cookies().delete("sessionId");
     cookies().delete("apacheToken");
@@ -18,6 +20,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
         },
         redirect: "manual",
     });
+
+    const endTime = new Date();
+    const time = endTime.getTime() - startTime.getTime();
+    console.log(`\x1b[32m ✓\x1b[0m Logged out in`, time, `ms`);
 
     return NextResponse.json(
         { text: "Logged out." },
