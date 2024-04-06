@@ -135,17 +135,17 @@ body {
   width: 100%;
 }
 
-.grades-table tr td:nth-child(2) {
+.grades-table tr td:nth-child(3) {
   text-align: right;
   font-weight: 700;
 }
 
-.grades-table tr td:nth-child(4) {
+.grades-table tr td:nth-child(5) {
   text-align: right;
   width: 0%;
 }
 
-.grades-table tr td:nth-child(3) {
+.grades-table tr td:nth-child(4) {
   text-align: center;
   width: 0%;
   padding: 0 20px;
@@ -156,16 +156,25 @@ body {
   padding: 10px 0;
 }
 
-.grades-table tr th:nth-child(2) {
-  text-align: right;
-}
-
 .grades-table tr th:nth-child(3) {
-  text-align: center;
+  text-align: right;
 }
 
 .grades-table tr th:nth-child(4) {
+  text-align: center;
+}
+
+.grades-table tr th:nth-child(5) {
   text-align: right;
+}
+
+.grades-table tr td:nth-child(1) {
+  cursor: pointer;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .gpa-container {
@@ -231,48 +240,6 @@ a {
 
 .gpa-box p {
   margin: 0;
-}
-
-.events-table {
-  width: 100%;
-}
-
-.events-table tr td:nth-child(1) {
-  text-align: right;
-  font-weight: 700;
-  padding-right: 20px;
-}
-
-.events-table tr td:nth-child(2) {
-  text-align: left;
-  width: 0%;
-}
-
-.events-table tr th:nth-child(1) {
-  text-align: right;
-  padding-right: 20px;
-}
-
-.events-table tr th:nth-child(2) {
-  text-align: left;
-}
-
-.events-table tr th:nth-child(3) {
-  text-align: left;
-  padding-left: 20px;
-}
-
-.events-table tr td:nth-child(3) {
-  text-align: left;
-  padding-left: 20px;
-}
-
-.events-table tr th:nth-child(4) {
-  text-align: right;
-}
-
-.events-table tr td:nth-child(4) {
-  text-align: right;
 }
 
 @keyframes rainbow {
