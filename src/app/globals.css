@@ -135,17 +135,17 @@ body {
   width: 100%;
 }
 
-.grades-table tr td:nth-child(3) {
+.grades-table tr td.class-name {
   text-align: right;
   font-weight: 700;
 }
 
-.grades-table tr td:nth-child(5) {
+.grades-table tr td.room-number {
   text-align: right;
   width: 0%;
 }
 
-.grades-table tr td:nth-child(4) {
+.grades-table tr td.grade {
   text-align: center;
   width: 0%;
   padding: 0 20px;
@@ -168,14 +168,17 @@ body {
   text-align: right;
 }
 
-.grades-table tr td:nth-child(1) {
+.grades-table tr:nth-child(even) td:nth-child(1) {
   cursor: pointer;
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  width: 0%;
+  padding-right: 10px;
 }
+
 
 .gpa-container {
   display: flex;
@@ -255,7 +258,7 @@ a {
 }
 
 .hGrade {
-  background-image: repeating-linear-gradient(90deg, violet, indigo, blue, green, yellow, orange, red, violet);
+  background-image: repeating-linear-gradient(90deg, violet, rgb(0, 110, 255), green, yellow, orange, red, violet);
   text-align: center;
   background-size: 50% 100%;
   background-clip: text;
@@ -332,4 +335,36 @@ a {
 
 .checkbox-container label {
   margin-top: 100px;
+}
+
+.assignment-table {
+  width: 100%;
+  padding-left: 46px;
+}
+
+.assignment-table tr td.assignment-name {
+  text-align: left;
+  width: 40%;
+}
+
+.assignment-table tr td.due-date {
+  text-align: right;
+  width: 20%;
+}
+
+.assignment-table tr td.assignment-grade-fraction {
+  text-align: right;
+  width: 0%;
+  padding-left: 20px;
+}
+
+.assignment-table tr td.assignment-grade-percent {
+  text-align: center;
+  width: 0%;
+  padding-left: 20px;
+}
+
+.table-grade-header {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
 }

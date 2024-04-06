@@ -90,42 +90,42 @@ export default function Home() {
 								<th></th>
 								<th>TEACHERS</th>
 								<th>CLASS</th>
-								<th>GRADE</th>
+								<th className="table-grade-header">GRADE</th>
 								<th>RM.</th>
 							</tr>
 							{classData.map((data, index) => (
 								<>
 									<tr key={index} id={`c${index}`}>
-										<td onClick={() => handleRowClick(index)}>
+										<td onClick={() => handleRowClick(index)} className="dropdown-icon">
 											▶
 										</td>
-										<td>{data.teacher}</td>
-										<td>{data.name}</td>
-										<td className={data.grade !== null ? (data.grade >= 100 ? "hGrade" : "") : ""}>
+										<td className="teachers">{data.teacher}</td>
+										<td className="class-name">{data.name}</td>
+										<td className={`${data.grade !== null ? (data.grade >= 100 ? "hGrade" : "") : ""} grade`}>
 											{data.grade !== null ? data.grade.toFixed(2) : "-"}
 										</td>
-										<td>{data.room}</td>
+										<td className="room-number">{data.room}</td>
 									</tr>
 									{assignmentData[index] && (
 										<tr hidden={true} id={`a${index}`} key={index}>
-											<td colSpan={4}>
+											<td colSpan={5}>
 												<table className="assignment-table">
 													<tbody>
 													{
 														assignmentData[index].map((assignment, index) => (
 															<tr key={index}>
-																<td>{assignment.name}</td>
-																<td>{assignment.gradeCategory}</td>
-																<td>{assignment.dueDate}</td>
-																<td>
+																<td className="assignment-name">{assignment.name}</td>
+																<td className="grade-category">{assignment.gradeCategory}</td>
+																<td className="due-date">{assignment.dueDate}</td>
+																<td className="assignment-grade-fraction">
 																	{assignment.points !== null
 																		? `${assignment.earned}/${assignment.points}`
 																		: "-"}
 																</td>
-																<td>
+																<td className={`${assignment.earned !== null && assignment.points !== null ? ((assignment.earned / assignment.points * 100) >= 100 ? "hGrade" : "") : ""} assignment-grade-percent`}>
 																	{
 																		assignment.points && assignment.earned ?
-																			assignment.earned / assignment.points * 100 + "%"
+																			(assignment.earned / assignment.points * 100).toFixed(2)
 																			: "-"
 																	}
 																</td>
