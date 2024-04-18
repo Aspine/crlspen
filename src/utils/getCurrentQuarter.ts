@@ -22,14 +22,12 @@ const quarterTable = [
 ]
 
 export function getCurrentQuarterOid() {
-    // const today = new Date();
-    // for (let i = 0; i < quarterTable.length; i++) {
-    //     const quarter = quarterTable[i];
-    //     const endDate = new Date(quarter.end);
-    //     if (today < endDate) {
-    //         return quarter.oid;
-    //     }
-    // }
-
-    return quarterTable[2].oid;
+    const today = new Date();
+    for (let i = 0; i < quarterTable.length; i++) {
+        const quarter = quarterTable[i];
+        const endDate = new Date(quarter.end);
+        if (today < endDate) {
+            return quarter.oid;
+        }
+    }
 }

@@ -11,6 +11,7 @@ export default function Home() {
 	const [classData, setClassData] = useState<Class[]>([]);
 	const [assignmentData, setAssignmentData] = useState<Assignment[][]>([]);
 	const [loading, setLoading] = useState(true);
+	const [loadingAssignment, setLoadingAssignment] = useState(true);
 
 	useEffect(() => {
 		setClassData(JSON.parse(
@@ -42,7 +43,12 @@ export default function Home() {
 				method: "GET",
 			}).then(res => res.json());
 
+			const assignmentWeightsQ3 = await fetch("/api/get_assignment_weights_current", {
+				method: "GET",
+			}).then(res => res.json());
+
 			setAssignmentData(assignmentDataQ3);
+			setLoadingAssignment(false);
 		}
 
 		backgroundScrape();
@@ -96,9 +102,10 @@ export default function Home() {
 							{classData.map((data, index) => (
 								<>
 									<tr key={index} id={`c${index}`}>
+										{loadingAssignment ? <td>...</td> :
 										<td onClick={() => handleRowClick(index)} className="dropdown-icon">
 											▶
-										</td>
+										</td>}
 										<td className="teachers">{data.teacher}</td>
 										<td className="class-name">{data.name}</td>
 										<td className={`${data.grade !== null ? (data.grade >= 100 ? "hGrade" : "") : ""} grade`}>
