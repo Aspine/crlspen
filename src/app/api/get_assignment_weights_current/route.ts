@@ -17,14 +17,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
 		const classes = classesList.length;
 		var assingmentsList: Assignment[][] = [];
 
-		await fetch("https://aspen.cpsd.us/aspen/portalClassDetail.do?navkey=academics.classes.list.detail", {
+		await fetch("https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd", {
 			headers: {
 				Cookie: `JSESSIONID=${sessionId}`
 			},
 		}).then(res => res.text()).then(html => {
 			const $ = cheerio.load(html);
-
-            console.log(html);
 
 			const assignments: Assignment[] = [];
 
@@ -60,7 +58,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 		for (let i = 0; i < classes - 1; i++) {
 			const assignments: Assignment[] = [];
 
-			await fetch("https://aspen.cpsd.us/aspen/portalClassDetail.do?navkey=academics.classes.list.detail", {
+			await fetch("https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd", {
 				headers: {
 					Cookie: `JSESSIONID=${sessionId}`
 				},
@@ -102,7 +100,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 				const recordsCount = parseInt($("#totalRecordsCount")?.text() || "0");
 
 				if (recordsCount > 25) {
-					await fetch("https://aspen.cpsd.us/aspen/portalClassDetail.do?navkey=academics.classes.list.detail", {
+					await fetch("https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd", {
 						headers: {
 							Cookie: `JSESSIONID=${sessionId}`
 						},
