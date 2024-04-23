@@ -43,10 +43,6 @@ export default function Home() {
 				method: "GET",
 			}).then(res => res.json());
 
-			const assignmentWeightsQ3 = await fetch("/api/get_assignment_weights_current", {
-				method: "GET",
-			}).then(res => res.json());
-
 			setAssignmentData(assignmentDataQ3);
 			setLoadingAssignment(false);
 		}
