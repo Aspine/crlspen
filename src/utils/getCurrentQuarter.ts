@@ -30,4 +30,6 @@ export function getCurrentQuarterOid() {
             return quarter.oid;
         }
     }
+
+    return quarterTable[0].oid;
 }
