@@ -30,9 +30,6 @@ export function getCurrentQuarterOid() {
             return quarter.oid;
         }
     }
-<<<<<<< HEAD
-=======
 
     return quarterTable[0].oid;
->>>>>>> parent of fb80002 (fix styling, just return q3 oid for testing)
 }
