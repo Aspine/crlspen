@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
-import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   title: "CRLSpen",
@@ -16,7 +15,6 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning={true} >
         {children}
-        <SpeedInsights />
       </body>
     </html>
   );
