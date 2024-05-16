@@ -77,13 +77,13 @@ export default function Home() {
 				<div className="page-main">
 					<div className="gpa-container">
 						<div className="gpa-box hUnweightedGpa">
-							<p>Q3 100 Scale: {hUnweightedGpa.toFixed(2)}</p>
+							<p>Q4 100 Scale: {hUnweightedGpa.toFixed(2)}</p>
 						</div>
 						<div className="gpa-box fWeightedGpa">
-							<p>Q3 Weighted: {fWeightedGpa.toFixed(2)}</p>
+							<p>Q4 Weighted: {fWeightedGpa.toFixed(2)}</p>
 						</div>
 						<div className="gpa-box fUnweightedGpa">
-							<p>Q3 Unweighted: {fUnweightedGpa.toFixed(2)}</p>
+							<p>Q4 Unweighted: {fUnweightedGpa.toFixed(2)}</p>
 						</div>
 					</div>
 					<table className="grades-table">
