@@ -98,7 +98,7 @@ export default function Home() {
 							{classData.map((data, index) => (
 								<>
 									<tr key={index} id={`c${index}`}>
-										<td onClick={() => handleRowClick(index)}>
+										<td onClick={() => handleRowClick(index)} className="dropdown-icon">
 											▶
 										</td>
 										<td>{data.teacher}</td>
