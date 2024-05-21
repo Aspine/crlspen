@@ -13,7 +13,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [loadingAssignment, setLoadingAssignment] = useState(true);
 	const [assignmentsTableContent, setAssignmentsTableContent] = useState<JSX.Element[]>([
-		<p className="placeholder-text">click on a class to show assignments</p>
+		<p className="placeholder-text" key={0}>click on a class to show assignments</p>
 	]);
 
 	useEffect(() => {
@@ -59,8 +59,8 @@ export default function Home() {
 		if (assignments) {
 		setAssignmentsTableContent(
 			[
-				<table className="assignments-table">
-					<tbody>
+				<table className="assignments-table" key={index}>
+					<tbody key={index}>
 						{assignments.map((assignment, index) => (
 							<tr key={index}>
 								<td>{assignment.name}</td>
