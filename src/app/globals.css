@@ -2,7 +2,8 @@
   --background-color: #000000;
   --text-color: #ffffff;
   --alt-background-color: #1f1f1f;
-  --inside-padding: 15px;
+  --alt-text-color: #c0c0c0;
+  --inside-padding: 20px;
   --link-hightlight: rgb(68, 255, 49);
   --link-hightlightTrans: #8d7cff40;
   --uniMargin: 20px;
@@ -20,7 +21,7 @@ body {
   align-items: center;
   padding: var(--inside-padding);
   background-color: var(--alt-background-color);
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 .navlinks a {
@@ -113,19 +114,22 @@ body {
 
 .grades-table {
   width: 100%;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: #ffffff 1px solid;
 }
 
-.grades-table tr td:nth-child(3) {
+.grades-table tr td:nth-child(2) {
   text-align: right;
   font-weight: 700;
 }
 
-.grades-table tr td:nth-child(5) {
+.grades-table tr td:nth-child(4) {
   text-align: right;
   width: 0%;
 }
 
-.grades-table tr td:nth-child(4) {
+.grades-table tr td:nth-child(3) {
   text-align: center;
   width: 0%;
   padding: 0 20px;
@@ -136,27 +140,16 @@ body {
   padding: 10px 0;
 }
 
-.grades-table tr th:nth-child(3) {
+.grades-table tr th:nth-child(2) {
   text-align: right;
 }
 
-.grades-table tr th:nth-child(4) {
+.grades-table tr th:nth-child(3) {
   text-align: center;
 }
 
-.grades-table tr th:nth-child(5) {
+.grades-table tr th:nth-child(4) {
   text-align: right;
-}
-
-.dropdown-icon {
-  cursor: pointer;
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  width: 0%;
-  padding-right: 8px;
 }
 
 .gpa-container {
@@ -314,4 +307,20 @@ a {
 
 .checkbox-container label {
   margin-top: 100px;
+}
+
+.placeholder-text {
+  text-align: center;
+  font-style: italic;
+  width: 100%;
+  margin-top: 20px;
+  color: var(--alt-text-color);
+}
+
+.assignments-table {
+  width: 100%;
+}
+
+.class-row {
+  cursor: not-allowed;
 }
