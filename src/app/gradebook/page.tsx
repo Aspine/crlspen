@@ -12,6 +12,9 @@ export default function Home() {
 	const [assignmentData, setAssignmentData] = useState<Assignment[][]>([]);
 	const [loading, setLoading] = useState(true);
 	const [loadingAssignment, setLoadingAssignment] = useState(true);
+	const [assignmentsTableContent, setAssignmentsTableContent] = useState<JSX.Element[]>([
+		<p className="placeholder-text" key={0}>click on a class to show assignments</p>
+	]);
 
 	useEffect(() => {
 		setClassData(JSON.parse(
@@ -51,23 +54,27 @@ export default function Home() {
 	}, ["/api/get_schedule_data/", "/api/get_assignments_current/", setAssignmentData])
 
 	function handleRowClick(index: number) {
-		const element = document.getElementById(`a${index}`);
-		const row = document.getElementById(`c${index}`);
-		const arrow = row?.children[0];
+		const assignments = assignmentData[index] || [];
 
-		if (arrow) {
-			if (arrow.textContent === "▶") {
-				arrow.textContent = "▼";
-			} else {
-				arrow.textContent = "▶";
-			}
-		}
-
-		if (element) {
-			element.hidden = !element.hidden;
-		}
-
-		return;
+		if (assignments) {
+		setAssignmentsTableContent(
+			[
+				<table className="assignments-table" key={index}>
+					<tbody key={index}>
+						{assignments.map((assignment, index) => (
+							<tr key={index}>
+								<td>{assignment.name}</td>
+								<td>{assignment.gradeCategory}</td>
+								<td>{assignment.earned} / {assignment.points}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			]
+		);
+	} else {
+		<p className="placeholder-text">no assignments in this class</p>
+	}
 	}
 
 	return (
@@ -89,7 +96,6 @@ export default function Home() {
 					<table className="grades-table">
 						<tbody>
 							<tr>
-								<th></th>
 								<th>TEACHERS</th>
 								<th>CLASS</th>
 								<th>GRADE</th>
@@ -97,10 +103,11 @@ export default function Home() {
 							</tr>
 							{classData.map((data, index) => (
 								<>
-									<tr key={index} id={`c${index}`}>
-										<td onClick={() => handleRowClick(index)} className="dropdown-icon">
-											▶
-										</td>
+									<tr key={index} className="class-row" id={`c${index}`} onClick={() => handleRowClick(index)}
+										style={!loadingAssignment ? {
+											cursor: "pointer"
+										} : {}}
+									>
 										<td>{data.teacher}</td>
 										<td>{data.name}</td>
 										<td className={data.grade !== null ? (data.grade >= 100 ? "hGrade" : "") : ""}>
@@ -108,40 +115,12 @@ export default function Home() {
 										</td>
 										<td>{data.room}</td>
 									</tr>
-									{assignmentData[index] && (
-										<tr hidden={true} id={`a${index}`} key={index}>
-											<td colSpan={4}>
-												<table className="assignment-table">
-													<tbody>
-													{
-														assignmentData[index].map((assignment, index) => (
-															<tr key={index}>
-																<td>{assignment.name}</td>
-																<td>{assignment.gradeCategory}</td>
-																<td>{assignment.dueDate}</td>
-																<td>
-																	{assignment.points !== null
-																		? `${assignment.earned}/${assignment.points}`
-																		: "-"}
-																</td>
-																<td>
-																	{
-																		assignment.points && assignment.earned ?
-																			assignment.earned / assignment.points * 100 + "%"
-																			: "-"
-																	}
-																</td>
-															</tr>
-														))
-													}
-													</tbody>
-												</table>
-											</td>
-										</tr>
-									)}
 								</>
 							))}
 						</tbody>
+					</table>
+					<table className="assignments-table">
+						{loadingAssignment ? (<p className="placeholder-text">fetching assignments...</p>) : assignmentsTableContent}
 					</table>
 				</div>
 			</main>
