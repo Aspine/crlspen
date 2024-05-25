@@ -13,7 +13,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [loadingAssignment, setLoadingAssignment] = useState(true);
 	const [assignmentsTableContent, setAssignmentsTableContent] = useState<JSX.Element[]>([
-		<tbody><tr key={0}><td><p className="placeholder-text">click on a class to show assignments</p></td></tr></tbody>
+		<tbody key={0}><tr><td><p className="placeholder-text">click on a class to show assignments</p></td></tr></tbody>
 	]);
 
 	useEffect(() => {
@@ -80,7 +80,7 @@ export default function Home() {
 		} else {
 			setAssignmentsTableContent(
 				[
-					<p className="placeholder-text">no assignments for this class</p>
+					<p className="placeholder-text" key={classIndex}>no assignments for this class</p>
 				]
 			);
 		}
