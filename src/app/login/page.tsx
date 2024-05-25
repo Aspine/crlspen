@@ -66,22 +66,7 @@ export default function Home() {
 		});
 
 		if (response.ok) {
-
-			setLoadingText("Fetching Grades...");
-
-			const gradesResponse = await fetch("/api/get_grade_data_current/", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				}
-			});
-
-			if (gradesResponse.ok) {
-				const gradesData = await gradesResponse.json();
-
-				// redirect to the gradebook page
-				window.location.href = "/gradebook";
-			}
+			window.location.href = "/gradebook";
 		} else if (response.status === 400) {
 			await setLoading(false);
 			await setInvalidLogin(true);

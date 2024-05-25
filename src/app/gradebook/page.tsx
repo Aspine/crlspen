@@ -13,16 +13,40 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [loadingAssignment, setLoadingAssignment] = useState(true);
 	const [assignmentsTableContent, setAssignmentsTableContent] = useState<JSX.Element[]>([
-		<p className="placeholder-text">click on a class to show assignments</p>
+		<tbody><tr><td><p className="placeholder-text">click on a class to show assignments</p></td></tr></tbody>
 	]);
 
 	useEffect(() => {
-		setClassData(JSON.parse(
-			decodeURIComponent(document.cookie.split(';').find(cookie => cookie.trim().startsWith("classDataQ3="))?.split('=')[1] || "[]")
-		));
+		async function getData() {
+			const gradesResponse = await fetch("/api/get_grade_data_current/", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				}
+			});
 
-		setLoading(false);
-	}, [setClassData]);
+			setClassData((await gradesResponse.json()).text);
+			setLoading(false);
+
+			await fetch("/api/get_schedule_data", {
+				method: "GET",
+			});
+
+			const assignmentDataQ3 = await fetch("/api/get_assignments_current", {
+				method: "GET",
+			}).then(res => res.json());
+
+			// const classInfoDataQ3 = await fetch("/api/get_class_info_current", {
+			// 	method: "GET",
+			// }).then(res => res.json());
+
+			setAssignmentData(assignmentDataQ3);
+			setLoadingAssignment(false);
+		}
+
+		getData();
+
+	}, [setClassData, "/api/get_grade_data_current/", "/api/get_schedule_data/", "/api/get_assignments_current/", setAssignmentData]);
 
 	const gpaInput = classData.map((data) => {
 		return {
@@ -36,49 +60,34 @@ export default function Home() {
 	const fUnweightedGpa = calculateGpa(gpaInput, "fUnweighted");
 	const fWeightedGpa = calculateGpa(gpaInput, "fWeighted");
 
-	useEffect(() => {
-		async function backgroundScrape() {
-			await fetch("/api/get_schedule_data", {
-				method: "GET",
-			});
+	function handleRowClick(classIndex: number) {
+		const assignments = assignmentData[classIndex] || [];
 
-			const assignmentDataQ3 = await fetch("/api/get_assignments_current", {
-				method: "GET",
-			}).then(res => res.json());
-
-			setAssignmentData(assignmentDataQ3);
-			setLoadingAssignment(false);
+		if (assignments && assignments.length != 0) {
+			setAssignmentsTableContent(
+				[
+						<tbody key={classIndex}>
+							{assignments.map((assignment, index) => (
+								<tr key={index}>
+									<td>{assignment.name}</td>
+									<td>{assignment.gradeCategory}</td>
+									<td>{assignment.earned} / {assignment.points}</td>
+								</tr>
+							))}
+						</tbody>
+				]
+			);
+		} else {
+			setAssignmentsTableContent(
+				[
+					<p className="placeholder-text">no assignments for this class</p>
+				]
+			);
 		}
-
-		backgroundScrape();
-	}, ["/api/get_schedule_data/", "/api/get_assignments_current/", setAssignmentData])
-
-	function handleRowClick(index: number) {
-		const assignments = assignmentData[index] || [];
-
-		if (assignments) {
-		setAssignmentsTableContent(
-			[
-				<table className="assignments-table">
-					<tbody>
-						{assignments.map((assignment, index) => (
-							<tr key={index}>
-								<td>{assignment.name}</td>
-								<td>{assignment.gradeCategory}</td>
-								<td>{assignment.earned} / {assignment.points}</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			]
-		);
-	} else {
-		<p className="placeholder-text">no assignments in this class</p>
-	}
 	}
 
 	return (
-		loading ? <LoadingScreen loadText="Parsing Grades..." /> :
+		loading ? <LoadingScreen loadText="Fetching Grades..." /> :
 			<main>
 				<NavBar />
 				<div className="page-main">
@@ -95,15 +104,15 @@ export default function Home() {
 					</div>
 					<table className="grades-table">
 						<tbody>
-							<tr>
-								<th>TEACHERS</th>
-								<th>CLASS</th>
-								<th>GRADE</th>
-								<th>RM.</th>
+							<tr key={0}>
+								<th key={0}>TEACHERS</th>
+								<th key={1}>CLASS</th>
+								<th key={2}>GRADE</th>
+								<th key={3}>RM.</th>
 							</tr>
 							{classData.map((data, index) => (
-								<>
-									<tr key={index} className="class-row" id={`c${index}`} onClick={() => handleRowClick(index)}
+								<React.Fragment key={index+1}>
+									<tr className="class-row" id={`c${index}`} onClick={() => handleRowClick(index)}
 										style={!loadingAssignment ? {
 											cursor: "pointer"
 										} : {}}
@@ -115,7 +124,7 @@ export default function Home() {
 										</td>
 										<td>{data.room}</td>
 									</tr>
-								</>
+								</React.Fragment>
 							))}
 						</tbody>
 					</table>
