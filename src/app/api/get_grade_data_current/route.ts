@@ -74,6 +74,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 		console.log("\x1b[32m ✓\x1b[0m scraped class data in", elapsedTimeClasses, "ms");
 
 		// cookies().set("classDataQ3", JSON.stringify(classesList));
+		cookies().set("classDataLength", String(classesList.length));
 
 		return NextResponse.json({ text: classesList }, { status: 200 });
 	} catch (error) {

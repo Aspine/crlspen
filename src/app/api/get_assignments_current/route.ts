@@ -11,9 +11,8 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
 		const sessionId = cookies().get("sessionId")?.value;
 		var apacheToken = cookies().get("apacheToken")?.value;
-		const classesListUnparsed = cookies().get("classDataQ3")?.value;
-		const classesList = classesListUnparsed ? JSON.parse(classesListUnparsed) : [];
-		const classes = classesList.length;
+		const classesUnparsed = cookies().get("classDataLength")?.value;
+		const classes: number = classesUnparsed ? +classesUnparsed | 0 : 0;
 		var assingmentsList: Assignment[][] = [];
 
 		await fetch("https://aspen.cpsd.us/aspen/portalAssignmentList.do?navkey=academics.classes.list.gcd", {
