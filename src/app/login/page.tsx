@@ -116,7 +116,7 @@ export default function Home() {
 						This is actively being worked on,
 						<br />
 						check out the{" "}
-						<a href="https://github.com/Aspine/CRLSpen">
+						<a href="https://github.com/Aspine/crlspen">
 							repository on our github
 						</a>
 						!

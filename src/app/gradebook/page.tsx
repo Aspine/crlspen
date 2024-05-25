@@ -13,7 +13,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [loadingAssignment, setLoadingAssignment] = useState(true);
 	const [assignmentsTableContent, setAssignmentsTableContent] = useState<JSX.Element[]>([
-		<tbody><tr><td><p className="placeholder-text">click on a class to show assignments</p></td></tr></tbody>
+		<tbody><tr key={0}><td><p className="placeholder-text">click on a class to show assignments</p></td></tr></tbody>
 	]);
 
 	useEffect(() => {
