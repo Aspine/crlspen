@@ -21,6 +21,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
 		).then((res) => res.text()).then((html) => {
 			const $ = cheerio.load(html);
 
+			if (html.includes("You are not logged on or your session has expired.")) {
+				throw new Error("Session expired");
+			}
+
 			const apacheInput = $("input");
 			apacheToken = apacheInput.attr("value");
 
@@ -64,7 +68,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 			});
 
 			return classes;
-		})
+		});
 
 		cookies().set("apacheToken", apacheToken ? apacheToken : "");
 
@@ -73,23 +77,13 @@ export async function GET(req: NextRequest, res: NextResponse) {
 			endTimeClasses.getTime() - startTimeClasses.getTime();
 		console.log("\x1b[32m ✓\x1b[0m scraped class data in", elapsedTimeClasses, "ms");
 
-		cookies().set("classDataQ3", JSON.stringify(classesList));
+		// cookies().set("classDataQ3", JSON.stringify(classesList));
+		cookies().set("classDataLength", String(classesList.length));
 
 		return NextResponse.json({ text: classesList }, { status: 200 });
 	} catch (error) {
 		console.error("Error during scraping:", error);
-		if (res.status) {
-			return NextResponse.json(
-				{ error: "Internal Server Error" },
-				{ status: 500 },
-			);
-		} else {
-			console.error("res object does not have a status function");
-		}
 
-		return NextResponse.json(
-			{ error: "Internal Server Error" },
-			{ status: 500 },
-		);
+		return NextResponse.json({ text: "An error occurred" }, { status: 500 });
 	}
 }

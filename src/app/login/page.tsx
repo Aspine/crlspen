@@ -66,22 +66,7 @@ export default function Home() {
 		});
 
 		if (response.ok) {
-
-			setLoadingText("Fetching Grades...");
-
-			const gradesResponse = await fetch("/api/get_grade_data_current/", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				}
-			});
-
-			if (gradesResponse.ok) {
-				const gradesData = await gradesResponse.json();
-
-				// redirect to the gradebook page
-				window.location.href = "/gradebook";
-			}
+			window.location.href = "/gradebook";
 		} else if (response.status === 400) {
 			await setLoading(false);
 			await setInvalidLogin(true);
@@ -126,17 +111,9 @@ export default function Home() {
 						</div>
 					) : (null)}
 					<div className="loginSplash">
-						Welcome to the beta of CRLSpen!
-						<br />
-						This is actively being worked on,
-						<br />
-						check out the{" "}
-						<a href="https://github.com/Aspine/crlspen">
-							repository on our github
-						</a>
-						!
-						<br />
-						<br />
+						<p className="placeholder-text"
+						 	style={{ marginTop: "0", fontSize: "0.9rem", marginBottom: "21px"}}
+						>Enter your Aspen credentials.</p>
 						<button
 							className="loginSubmissionButton"
 							type="submit"
