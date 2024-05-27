@@ -332,3 +332,28 @@ a {
   white-space: nowrap;
   padding-left: 20px;
 }
+
+.about-text {
+  font-size: 16px;
+}
+
+code {
+  background-color: var(--alt-background-color);
+  color: var(--text-color);
+  padding: 2.5px;
+  border-radius: 2.5px;
+  font-size: 14px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+.about-link {
+  color: var(--text-color);
+  padding: 10px;
+  background: var(--background-color);
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}

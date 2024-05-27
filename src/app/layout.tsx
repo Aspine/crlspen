@@ -15,6 +15,7 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning={true} >
         {children}
+        <a href="/about" className="about-link">About CRLSpen</a>
       </body>
     </html>
   );
