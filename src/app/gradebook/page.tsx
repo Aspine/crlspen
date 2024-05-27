@@ -25,8 +25,13 @@ export default function Home() {
 				}
 			});
 
-			setClassData((await gradesResponse.json()).text);
-			setLoading(false);
+			if (gradesResponse.ok) {
+				setClassData((await gradesResponse.json()).text);
+				setLoading(false);
+			} else {
+				console.error("Failed to fetch grades data");
+				window.location.href = "/login";
+			}
 
 			await fetch("/api/get_schedule_data", {
 				method: "GET",
@@ -71,7 +76,7 @@ export default function Home() {
 								<tr key={index}>
 									<td>{assignment.name}</td>
 									<td>{assignment.gradeCategory}</td>
-									<td>{assignment.earned} / {assignment.points}</td>
+									<td className="fraction-grade">{`${assignment.earned || 0} / ${assignment.points || 0}`}</td>
 								</tr>
 							))}
 						</tbody>
@@ -87,7 +92,7 @@ export default function Home() {
 	}
 
 	return (
-		loading ? <LoadingScreen loadText="Fetching Grades..." /> :
+		loading ? <LoadingScreen loadText="Loading..." /> :
 			<main>
 				<NavBar />
 				<div className="page-main">

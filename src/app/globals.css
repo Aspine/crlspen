@@ -55,6 +55,8 @@ body {
   box-shadow: 0 0 2px 1px white;
   background-color: var(--background-color);
   color: var(--text-color);
+  max-width: 250px;
+  width: 100%;
 }
 
 .login-box button {
@@ -323,4 +325,10 @@ a {
 
 .class-row {
   cursor: not-allowed;
+}
+
+.fraction-grade {
+  width: 1%;
+  white-space: nowrap;
+  padding-left: 20px;
 }
