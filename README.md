@@ -1,4 +1,4 @@
-# CRLSpen
+# CRLSpen - BROKEN
 
 This website is a remake/improvement of [Aspine](https://github.com/Aspine/aspine).
 
